@@ -1,6 +1,6 @@
-from api.management.config import setup as config
-from cause.api.management.core.manage import Database
 from .base import Base
+from ..config import setup as config
+from ..core.database import Database
 from ..models.permission import PermissionSystemFeature as Table
 
 

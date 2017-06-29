@@ -1,7 +1,6 @@
 from datetime import date, timedelta
-
-from api.management.core.database import Database
 from .base import Base
+from ..core.database import Database
 
 
 class WebuserStatistic(Base):

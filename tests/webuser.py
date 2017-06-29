@@ -1,6 +1,5 @@
 import unittest
-
-from api.management.core.database import Database
+from ..core.database import Database
 from ..resturls.webuser import Webuser
 
 

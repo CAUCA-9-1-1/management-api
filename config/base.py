@@ -1,9 +1,7 @@
-import importlib
 import os
-
+import logging
 import cherrypy
-
-from core import logging
+import importlib
 from . import setup as config
 from ..core.case_format import CaseFormat
 

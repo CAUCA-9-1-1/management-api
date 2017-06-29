@@ -1,7 +1,7 @@
-from api.management.core.database import Database
-from api.management.core.token import Token
 from .base import Base
 from .webuser import Webuser
+from ..core.database import Database
+from ..core.token import Token
 from ..models.access_token import AccessToken
 
 

@@ -1,10 +1,9 @@
 import uuid
-
-from api.management.config import setup as config
-from cause.api.management.core.manage import Database
+from ..config import setup as config
+from ..core.database import Database
+from ..models.permission import Permission as Table
 from .base import Base
 from .permissionsystemfeature import PermissionSystemFeature
-from ..models.permission import Permission as Table
 
 
 class PermissionWebuser(Base):

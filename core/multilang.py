@@ -1,11 +1,9 @@
 import json
+import logging
 import uuid
-
-from api.management.core.database import Database
-from api.management.core.utilities import Utilities
-from cause.api.management.models.language_content import LanguageContent
-
-from core import logging
+from .database import Database
+from .utilities import Utilities
+from ..models.language_content import LanguageContent
 
 
 class MultiLang:
