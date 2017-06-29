@@ -1,4 +1,5 @@
 import os
+import uuid
 
 
 # Database config
@@ -58,3 +59,12 @@ SEARCH_FOLDERS = ['app', 'cause.api.management']
 if os.path.isfile("config.py"):
 	with open("config.py") as file:
 		exec(file.read())
+
+if PERMISSION is None:
+	system_id = str(uuid.uuid4())
+
+	raise Exception("""
+		You need to set the permission systemID.
+		Place PERMISSION = {'systemID': '%s'} in your config file
+		And execute the request "INSERT INTO tbl_permission_system VALUES('%s', '%s');" on your database
+	""" % (system_id, system_id, PACKAGE_NAME))

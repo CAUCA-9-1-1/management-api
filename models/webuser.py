@@ -39,10 +39,11 @@ class Webuser(Base):
 
 		return Utilities.list_to_dict(attrs, 'attribute_name', 'attribute_value')
 
-	def __init__(self, id_webuser, username, password):
+	def __init__(self, id_webuser, username, password, is_active):
 		self.id_webuser = id_webuser
 		self.username = username
 		self.password = Encryption.password(password)
+		self.is_active = is_active
 
 	def set_attributes(self, id_webuser, attributes):
 		with Database() as db:

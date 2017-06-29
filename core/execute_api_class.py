@@ -56,7 +56,11 @@ class ExecuteApiClass:
 		if api_method is None:
 			raise Exception("We can't find the method '%s' on class '%s'" % (cherrypy.request.method, name))
 
-		if Token().valid_access_from_header() is True or (name == 'Auth' and cherrypy.request.method == 'PUT'):
+		if Token().valid_access_from_header() is True or (
+			name == 'Auth' and (
+				cherrypy.request.method == 'PUT' or cherrypy.request.method == 'POST'
+			)
+		):
 			execute = getattr(class_object, 'every_execution', None)
 			execute(class_object(), name, cherrypy.request.method, *args)
 

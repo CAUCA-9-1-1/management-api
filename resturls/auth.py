@@ -27,8 +27,4 @@ class Auth(Token, Base):
 		}
 
 	def register(self, args):
-		Webuser().create(args)
-
-		return {
-			'message': 'user successfully saved'
-		}
+		return Webuser().create(args)
