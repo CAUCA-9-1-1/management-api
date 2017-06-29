@@ -44,7 +44,7 @@ IS_DEV = False
 IS_SSL = False
 IS_UWSGI = True
 MODULE_NAME = 'cause-api-management'
-PACKAGE_NAME = 'cause-api-management'
+PACKAGE_NAME = None
 PACKAGE_VERSION = '__package_version__'
 PORT = 8080
 SESSION_TIMEOUT = 30
@@ -59,6 +59,9 @@ SEARCH_FOLDERS = ['app', 'cause.api.management']
 if os.path.isfile("config.py"):
 	with open("config.py") as file:
 		exec(file.read())
+
+if PACKAGE_NAME is None:
+	raise Exception("You need to set 'PACKAGE_NAME' inside your config file")
 
 if PERMISSION is None:
 	system_id = str(uuid.uuid4())

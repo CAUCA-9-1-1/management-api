@@ -17,9 +17,10 @@ class AccessSecretkey(Base):
 	created_on = Column(DateTime, default=datetime.now)
 	is_active = Column(Boolean, default=True)
 
-	def __init__(self, id_access_token, id_webuser, application_name, randomkey, secretkey):
-		self.id_access_token = id_access_token
+	def __init__(self, id_access_secretkey, id_webuser, application_name, randomkey, secretkey):
+		self.id_access_secretkey = id_access_secretkey
 		self.id_webuser = id_webuser
 		self.application_name = application_name
 		self.randomkey = randomkey
 		self.secretkey = secretkey
+		self.is_active = False

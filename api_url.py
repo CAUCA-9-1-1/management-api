@@ -13,6 +13,10 @@ class ApiUrl(ExecuteApiClass):
 		})
 
 	@cherrypy.expose
+	def accesssecretkey(self, *args, **kwargs):
+		return self.call_method('AccessSecretkey', self.get_argument(args, kwargs))
+
+	@cherrypy.expose
 	def auth(self, *args, **kwargs):
 		return self.call_method('Auth', self.get_argument(args, kwargs))
 
