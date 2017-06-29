@@ -1,7 +1,7 @@
 import json
 
-from api.management.config import setup as config
-from api.management.core.database import Database
+from ..config import setup as config
+from ..core.database import Database
 from ..models.apis_action import ApisAction as Table
 from ..models.permission import Permission, PermissionSystemFeature, PermissionObject
 

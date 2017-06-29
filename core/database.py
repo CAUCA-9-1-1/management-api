@@ -1,7 +1,6 @@
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.orm import sessionmaker
-
-from api.management.config import setup as config
+from ..config import setup as config
 
 
 class Database:

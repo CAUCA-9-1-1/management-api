@@ -1,9 +1,7 @@
 import json
-
 import cherrypy
-
-from api.management.config import setup as config
-from api.management.core.execute_api_class import ExecuteApiClass
+from .config import setup as config
+from .core.execute_api_class import ExecuteApiClass
 
 
 class ApiUrl(ExecuteApiClass):

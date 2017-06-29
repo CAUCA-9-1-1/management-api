@@ -1,12 +1,11 @@
 from datetime import datetime
-
 from sqlalchemy import Column, Boolean, DateTime, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.hybrid import hybrid_property
+from ..core.database import Database
+from ..core.encryption import Encryption
+from ..core.utilities import Utilities
 
-from api.management.core.database import Database
-from api.management.core.encryption import Encryption
-from api.management.core.utilities import Utilities
 
 Base = declarative_base()
 

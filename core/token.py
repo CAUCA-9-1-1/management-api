@@ -2,15 +2,13 @@ import datetime
 import hashlib
 import random
 import uuid
-
 import cherrypy
-
-from api.management.config import setup as config
-from api.management.core.database import Database
-from cause.api.management.models.access_secretkey import AccessSecretkey
-from cause.api.management.models.access_token import AccessToken
-from cause.api.management.resturls.base import Base
-from cause.api.management.resturls.webuser import Webuser
+from .database import Database
+from ..config import setup as config
+from ..models.access_secretkey import AccessSecretkey
+from ..models.access_token import AccessToken
+from ..resturls.base import Base
+from ..resturls.webuser import Webuser
 
 
 class Token:

@@ -1,11 +1,10 @@
 from datetime import datetime
-
 from sqlalchemy import Column, Boolean, DateTime, String, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.hybrid import hybrid_property
-
-from api.management.core.database import Database
+from ..core.database import Database
 from ..models.webuser import Webuser
+
 
 Base = declarative_base()
 

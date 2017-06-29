@@ -1,8 +1,7 @@
 import uuid
-
-from api.management.core.database import Database
-from api.management.core.encryption import Encryption
 from .base import Base
+from ..core.database import Database
+from ..core.encryption import Encryption
 from ..models.webuser import Webuser as Table
 
 

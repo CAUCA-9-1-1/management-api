@@ -1,7 +1,6 @@
 import hashlib
 import hmac
-
-from api.management.config import setup as config
+from ..config import setup as config
 
 
 class Encryption:
