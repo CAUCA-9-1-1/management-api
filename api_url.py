@@ -5,9 +5,6 @@ from .core.execute_api_class import ExecuteApiClass
 
 
 class ApiUrl(ExecuteApiClass):
-	class_name = ''
-	method_name = ''
-
 	@cherrypy.expose
 	def index(self):
 		return json.dumps({
