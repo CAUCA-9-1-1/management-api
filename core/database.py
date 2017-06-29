@@ -9,6 +9,9 @@ class Database:
 	metadata = None
 
 	def __init__(self, db_name='general'):
+		if config.DATABASE is None:
+			raise Exception("You need to set 'DATABASE' inside your config file")
+
 		if 'username' in config.DATABASE[db_name]:
 			self.engine = create_engine('%s://%s:%s@%s/%s' % (
 				config.DATABASE[db_name]['engine'],
