@@ -27,10 +27,9 @@ class ExecuteApiClass:
 	def load_class_from(self, folder, name):
 		class_name = "%s.resturls.%s" % (folder, name.lower())
 
-		if folder[0:5] == 'cause':
+		file = '%s/%s.py' % (config.ROOT, class_name.replace('.', '/'))
+		if not os.path.isfile(file) and folder[0:5] == 'cause':
 			file = '%s/%s.py' % (config.ROOT[0:config.ROOT.rfind('/')], class_name.replace('.', '/'))
-		else:
-			file = '%s/%s.py' % (config.ROOT, class_name.replace('.', '/'))
 
 		if os.path.isfile(file):
 			try:

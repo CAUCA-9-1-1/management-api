@@ -85,9 +85,17 @@ class ConfigBase:
 	def add_page_from(self, folder, page):
 		try:
 			page_name = "%s.%s" % (folder, CaseFormat().pascal_to_snake(page))
-			page_loaded = importlib.import_module(page_name, '%s.pages' % folder)
 
-			return getattr(page_loaded, page)
+			file = '%s/%s.py' % (config.ROOT, page_name.replace('.', '/'))
+			if not os.path.isfile(file) and folder[0:5] == 'cause':
+				file = '%s/%s.py' % (config.ROOT[0:config.ROOT.rfind('/')], page_name.replace('.', '/'))
+
+			if os.path.isfile(file):
+				page_loaded = importlib.import_module(page_name, '%s.pages' % folder)
+
+				return getattr(page_loaded, page)
+			else:
+				return None
 		except Exception as e:
 			logging.exception("Loading exception on page '%s': %s", page_name, e)
 
