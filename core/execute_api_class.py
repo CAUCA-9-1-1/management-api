@@ -114,14 +114,13 @@ class ExecuteApiClass:
 					arguments = (args,)
 		except Exception as e:
 			if args:
-				arguments = ()
 				for val in args:
 					arguments = arguments + (self.convert_argument(val),)
 			if kwargs:
 				if config.FORCE_CAMELCASE:
 					kwargs = CaseFormat().object_camel_to_snake(self.convert_argument(kwargs))
 
-				arguments = (kwargs,)
+				arguments = arguments + (kwargs,)
 
 		return arguments
 
