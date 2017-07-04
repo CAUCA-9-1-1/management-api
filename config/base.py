@@ -20,7 +20,7 @@ class ConfigBase:
 			'tools.sessions.secure': config.IS_SSL,
 			'tools.sessions.httponly': True,
 			'tools.staticdir.root': os.path.abspath(os.getcwd()),
-			'log.screen': False,
+			'log.screen': config.IS_DEV,
 		}
 		self.static_config = {
 			'tools.staticdir.on': True,
@@ -45,6 +45,7 @@ class ConfigBase:
 
 	def check_uwsgi(self):
 		if config.IS_UWSGI is False:
+			# We skip this configuration on UWSGI because cherrypy open to many log file
 			self.base_config.update({
 				'log.access_file': '%s/data/logs/cherrypy_access.log' % config.ROOT,
 				'log.error_file': '%s/data/logs/cherrypy_error.log' % config.ROOT,
