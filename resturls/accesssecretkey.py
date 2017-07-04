@@ -15,7 +15,7 @@ class AccessSecretkey(Base):
 		'PATCH': '',
 	}
 
-	def create(self):
+	def create(self, args=None):
 		""" Create new access secret key
 		"""
 		id_access_secretkey = uuid.uuid4()
