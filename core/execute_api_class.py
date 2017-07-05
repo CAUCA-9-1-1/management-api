@@ -107,29 +107,37 @@ class ExecuteApiClass:
 
 			if body[0] is not '':
 				args = json.loads(body[0].decode('utf-8'))
-
-				if config.FORCE_CAMELCASE:
-					arguments = (CaseFormat().object_camel_to_snake(args),)
-				else:
-					arguments = (args,)
-		except Exception as e:
+				arguments = (args,)
+		except Exception:
 			if args:
 				for val in args:
+					val = self.parse_json(val)
+
 					arguments = arguments + (self.convert_argument(val),)
 			if kwargs:
-				if config.FORCE_CAMELCASE:
-					kwargs = CaseFormat().object_camel_to_snake(self.convert_argument(kwargs))
-
+				for key in kwargs:
+					kwargs[key] = self.parse_json(kwargs[key])
 				arguments = arguments + (kwargs,)
+
+		if config.FORCE_CAMELCASE:
+			return CaseFormat().object_camel_to_snake(arguments)
 
 		return arguments
 
-	def convert_argument(self, val):
-		if val == '' or val == 'null':
+	def parse_json(self, value):
+		try:
+			return json.loads(value)
+		except:
+			pass
+
+		return value
+
+	def convert_argument(self, value):
+		if value == '' or value == 'null':
 			return None
-		elif val == 'true':
+		elif value == 'true':
 			return True
-		elif val == 'false':
+		elif value == 'false':
 			return False
 
-		return val
+		return value

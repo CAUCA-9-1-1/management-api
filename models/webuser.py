@@ -1,3 +1,4 @@
+import json
 from datetime import datetime
 from sqlalchemy import Column, Boolean, DateTime, String
 from sqlalchemy.ext.declarative import declarative_base
@@ -36,8 +37,19 @@ class Webuser(Base):
 	def attributes(self):
 		with Database() as db:
 			attrs = db.query(WebuserAttributes).filter(WebuserAttributes.id_webuser == self.id_webuser).all()
+			attributes = list()
 
-		return Utilities.list_to_dict(attrs, 'attribute_name', 'attribute_value')
+			for attr in attrs:
+				try:
+					attr.attribute_value = json.loads(attr.attribute_value)
+				except:
+					pass
+
+				attributes.append(attr)
+
+			return Utilities.list_to_dict(attributes, 'attribute_name', 'attribute_value')
+
+		return {}
 
 	def __init__(self, id_webuser, username, password, is_active):
 		self.id_webuser = id_webuser
@@ -48,6 +60,9 @@ class Webuser(Base):
 	def set_attributes(self, id_webuser, attributes):
 		with Database() as db:
 			for name in attributes:
+				if isinstance(attributes[name], list):
+					attributes[name] = json.dumps(attributes[name])
+
 				data = db.query(WebuserAttributes).filter(
 					WebuserAttributes.id_webuser == id_webuser,
 					WebuserAttributes.attribute_name == name,

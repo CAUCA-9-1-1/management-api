@@ -49,6 +49,14 @@ PACKAGE_VERSION = '__package_version__'
 PORT = 8080
 SESSION_TIMEOUT = 30
 
+# Page web
+CAUSEJS = "st.cauca.ca"
+CONTENT_SECURITY_POLICY_CONNECT = None
+VERSION = {
+	'devExtreme': '16.2.6',
+	'jQuery': '3.1.0'
+}
+
 # Folder
 ROOT = os.path.abspath(os.getcwd())
 WEBROOT = '/'

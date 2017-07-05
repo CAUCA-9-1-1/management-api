@@ -32,13 +32,13 @@ class ConfigPage(ConfigBase):
 			})
 
 	def complete(self):
-		if os.path.exists("%s/app/pages/%s.py" % (config.ROOT, 'root')):
+		if os.path.exists("%s/app/%s.py" % (config.ROOT, 'root')):
 			self.add_page('Root', '/')
 
-		if os.path.exists("%s/app/pages/%s.py" % (config.ROOT, 'js')):
+		if os.path.exists("%s/app/%s.py" % (config.ROOT, 'js')):
 			self.add_page('Js')
 
-		if os.path.exists("%s/app/pages/%s.py" % (config.ROOT, 'ajax')):
+		if os.path.exists("%s/app/%s.py" % (config.ROOT, 'ajax')):
 			self.add_page('Ajax')
 
 		ConfigBase.complete(self)
