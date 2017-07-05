@@ -8,7 +8,7 @@ class PermissionObject(Base):
 	table_name = 'tbl_permission_object'
 	mapping_method = {
 		'GET': 'get',
-		'PUT': 'move',
+		'PUT': '',
 		'POST': 'save',
 		'DELETE': '',
 		'PATCH': '',
@@ -42,13 +42,6 @@ class PermissionObject(Base):
 			'data': data
 		}
 
-	def move(self, args):
-		onUsePermission().set_permission_object_parent(args['id_permission_object'], args['id_permission_object_parent'])
-
-		return {
-			'message': 'permission object successfully move'
-		}
-
 	def save(self, args):
 		if 'id_permission' not in args or args['id_permission'] is None:
 			if 'id_permission_system_feature' not in args:
@@ -64,3 +57,15 @@ class PermissionObject(Base):
 		return {
 			'message': 'permission successfully save'
 		}
+
+	def get_id_permission_object(self, object_table, generic_id):
+		with Database() as db:
+			object = db.query(Table).filter(
+				Table.object_table == object_table,
+				Table.generic_id == generic_id
+			).one()
+
+			if object is not None:
+				return object.id_permission_object
+
+		return None

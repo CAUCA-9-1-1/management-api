@@ -57,7 +57,7 @@ class Base:
 						PermissionSystemFeature.feature_name == feature_name,
 					).first()
 
-					return parent.access
+					return parent.access if parent else False
 				else:
 					return webuser.access
 

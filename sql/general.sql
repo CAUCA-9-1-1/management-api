@@ -29,8 +29,8 @@ create table tbl_access_token
 
 create table tbl_apis_action
 (
-	id_apis_update uuid not null
-		constraint tbl_field_update_pkey
+	id_apis_action uuid not null
+		constraint tbl_field_action_pkey
 			primary key,
 	id_webuser uuid not null,
 	method varchar(10),
