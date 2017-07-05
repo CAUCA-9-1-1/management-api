@@ -51,11 +51,12 @@ class Webuser(Base):
 		is_active = self.has_permission('RightAdmin')
 
 		with Database() as db:
-			db.insert(Table(id_webuser, args['username'], args['password'], is_active))
+			webuser = Table(id_webuser, args['username'], args['password'], is_active)
+			db.insert(webuser)
 			db.commit()
 
 			if 'attributes' in args:
-				Table.set_attributes(id_webuser, args['attributes'])
+				webuser.set_attributes(id_webuser, args['attributes'])
 
 		return {
 			'id_webuser': id_webuser,
