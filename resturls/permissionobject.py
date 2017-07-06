@@ -1,3 +1,4 @@
+import uuid
 from ..config import setup as config
 from ..core.database import Database
 from .base import Base
@@ -42,6 +43,26 @@ class PermissionObject(Base):
 			'data': data
 		}
 
+	def create(self, args):
+		if 'object_table' not in args or 'generic_id' not in args:
+			raise Exception("You need to pass a 'object_table' and 'generic_id'")
+
+		id_permission_object = uuid.uuid4()
+		is_group = args['is_group'] if 'is_group' in args else False
+		group_name = args['group_name'] if 'group_name' in args else ''
+
+		with Database() as db:
+			db.insert(Table(
+				id_permission_object, None, config.PERMISSION['systemID'],
+				args['object_table'], args['generic_id'], is_group, group_name
+			))
+			db.commit()
+
+		return {
+			'id_permission_object': id_permission_object,
+			'message': 'permission object successfully created'
+		}
+
 	def save(self, args):
 		if 'id_permission' not in args or args['id_permission'] is None:
 			if 'id_permission_system_feature' not in args:
@@ -63,7 +84,7 @@ class PermissionObject(Base):
 			object = db.query(Table).filter(
 				Table.object_table == object_table,
 				Table.generic_id == generic_id
-			).one()
+			).first()
 
 			if object is not None:
 				return object.id_permission_object

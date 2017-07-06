@@ -33,6 +33,10 @@ class ApiUrl(ExecuteApiClass):
 		return self.call_method('PermissionObject', self.get_argument(args, kwargs))
 
 	@cherrypy.expose
+	def permission(self, *args, **kwargs):
+		return self.call_method('Permission', self.get_argument(args, kwargs))
+
+	@cherrypy.expose
 	def permissionwebuser(self, *args, **kwargs):
 		return self.call_method('PermissionWebuser', self.get_argument(args, kwargs))
 

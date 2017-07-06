@@ -50,6 +50,9 @@ class Webuser(Base):
 		id_webuser = uuid.uuid4()
 		is_active = self.has_permission('RightAdmin')
 
+		if 'username' not in args or 'password' not in args:
+			raise Exception("You need to pass a 'username' and 'password'")
+
 		with Database() as db:
 			webuser = Table(id_webuser, args['username'], args['password'], is_active)
 			db.insert(webuser)

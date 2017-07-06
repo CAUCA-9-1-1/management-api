@@ -11,7 +11,7 @@ class Permission(Base):
 	mapping_method = {
 		'GET': 'get',
 		'PUT': 'modify',
-		'POST': '',
+		'POST': 'create',
 		'DELETE': '',
 		'PATCH': '',
 	}
@@ -44,30 +44,34 @@ class Permission(Base):
 		}
 
 	def create(self, args):
+		if 'id_permission_object' not in args or 'id_permission_system_feature' not in args or 'access' not in args:
+			raise Exception("You need to pass a 'id_permission_object', 'id_permission_system_feature' and 'access'")
+
 		id_permission = uuid.uuid4()
 
 		with Database() as db:
 			db.insert(Table(
-				id_permission, args['id_permission_object'], args['id_permission_system'],
-				args['id_permission_system_feature'], args['webuser_value']
+				id_permission, args['id_permission_object'], config.PERMISSION['systemID'],
+				args['id_permission_system_feature'], args['access']
 			))
 			db.commit()
 
 		return {
+			'id_permission': id_permission,
 			'message': 'permission successfully created'
 		}
 
 	def modify(self, args):
-		if args['id_permission'] is None:
-			self.create(args)
-		else:
-			with Database() as db:
-				data = db.query(Table).get(args['id_permission'])
+		if 'id_permission' not in args:
+			raise Exception("You need to pass a 'id_permission'")
 
-				if 'access' in args:
-					data.access = args['access']
+		with Database() as db:
+			data = db.query(Table).get(args['id_permission'])
 
-				db.commit()
+			if 'access' in args:
+				data.access = args['access']
+
+			db.commit()
 
 		return {
 			'message': 'permission successfully modified'
