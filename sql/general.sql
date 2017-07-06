@@ -5,7 +5,7 @@ create table tbl_access_secretkey
 	id_access_secretkey uuid not null
 		constraint tbl_access_secretkey_pkey
 			primary key,
-	id_webuser uuid not null,
+	id_webuser uuid,
 	application_name varchar(50),
 	randomkey varchar(100),
 	secretkey varchar(100),
