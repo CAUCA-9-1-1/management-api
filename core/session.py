@@ -22,9 +22,10 @@ class Session:
 			'Authorization': 'Token %s' % Session.get('access_token')
 		}))
 
-		for permission in data['data']:
-			if permission['feature_name'] == feature_name:
-				return True
+		if 'data' in data:
+			for permission in data['data']:
+				if permission['feature_name'] == feature_name:
+					return True
 
 		return False
 

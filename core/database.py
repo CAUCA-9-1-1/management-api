@@ -65,6 +65,24 @@ class Database:
 
 		return result
 
+	def get_row(self, query, args):
+		result = self.execute(query, args)
+
+		for row in result:
+			return row
+
+		return None
+
+	def get(self, query, args):
+		query = self.engine.execute(query, args)
+
+		try:
+			for row in query:
+				for val in row:
+					return val
+		except:
+			return None
+
 	def query(self, *args):
 		return self.session.query(*args)
 
