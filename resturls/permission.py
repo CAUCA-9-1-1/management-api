@@ -22,7 +22,7 @@ class Permission(Base):
 
 		if 'data' in features:
 			for feature in features['data']:
-				feature.webuser_value = None
+				feature.access = None
 				feature.id_permission = None
 				feature.id_permission_object = id_permission_object
 
