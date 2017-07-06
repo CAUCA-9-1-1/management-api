@@ -73,3 +73,17 @@ class Session:
 		cherrypy.session['id_webuser'] = data['data']['id_webuser'] if 'id_webuser' in data['data'] else ''
 
 		return True
+
+
+	def change_password(self, password):
+		data = {
+			'id_webuser': cherrypy.session['id_webuser'],
+			'password': password,
+			'reset_password': '0'
+		}
+
+		if 'token' in config.WEBSERVICE:
+			query = Request("%s/webuser/" % config.WEBSERVICE['host'], 'PUT')
+			query.send(data, None, {
+				'Authorization': 'Token %s' % config.WEBSERVICE['access_token']
+			})
