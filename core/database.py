@@ -45,35 +45,23 @@ class Database:
 		self.session.expunge_all()
 		self.session.close()
 
-	def execute(self, query, args=None):
-		query = self.engine.execute(query, args)
-		keys = query.keys()
-		result = list()
+	def execute(self, query, args=()):
+		result = self.engine.execute(query, args)
 
-		try:
-			for row in query:
-				nb = 0
-				my_row = {}
+		return self.fecth_assoc(result.fetchall(), result.keys())
 
-				for val in row:
-					my_row[keys[nb]] = val
-					nb = nb + 1
+	def callproc(self, procedure, args=()):
+		cursor = self.engine.raw_connection().cursor()
+		cursor.callproc(procedure, args)
 
-				result.append(my_row)
-		except:
-			pass
+		return self.fecth_assoc(cursor.fetchall(), self.keys_of_cursor(cursor))
 
-		return result
+	def get_row(self, query, args=()):
+		result = self.engine.execute(query, args)
 
-	def get_row(self, query, args):
-		result = self.execute(query, args)
+		return self.fecth_row_assoc(result.fetchone(), result.keys())
 
-		for row in result:
-			return row
-
-		return None
-
-	def get(self, query, args):
+	def get(self, query, args=()):
 		query = self.engine.execute(query, args)
 
 		try:
@@ -95,3 +83,33 @@ class Database:
 		self.session.commit()
 
 		return True
+
+	def keys_of_cursor(self, cursor):
+		keys = list()
+		fields = cursor._result.fields
+
+		for field in fields:
+			keys.append(field.name)
+
+		return keys
+
+	def fecth_assoc(self, rows, keys=None):
+		result = list()
+
+		try:
+			for row in rows:
+				result.append(self.fecth_row_assoc(row, keys))
+		except:
+			pass
+
+		return result
+
+	def fecth_row_assoc(self, row, keys):
+		nb = 0
+		my_row = {}
+
+		for val in row:
+			my_row[keys[nb]] = val
+			nb = nb + 1
+
+		return my_row

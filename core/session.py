@@ -17,6 +17,9 @@ class Session:
 		cherrypy.session[key] = value
 
 	def permission(self, feature_name):
+		if Session.get('access_token') is None:
+			return False
+
 		query = Request("%s/permissionwebuser/%s" % (config.WEBSERVICE['host'], Session.get('id_webuser')), 'GET')
 		data = json.loads(query.send(None, None, {
 			'Authorization': 'Token %s' % Session.get('access_token')
