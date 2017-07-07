@@ -83,16 +83,16 @@ class ConfigBase:
 			path = path if path is not None else '/%s' % page.lower()
 			cherrypy.tree.mount(page_class(), path, self.site_config)
 
-	def add_page_from(self, folder, page):
+	def add_page_from(self, package, page):
 		try:
-			page_name = "%s.%s" % (folder, CaseFormat().pascal_to_snake(page))
+			page_name = "%s.%s" % (package, CaseFormat().pascal_to_snake(page))
 
 			file = '%s/%s.py' % (config.ROOT, page_name.replace('.', '/'))
-			if not os.path.isfile(file) and folder[0:5] == 'cause':
+			if not os.path.isfile(file) and package[0:5] == 'cause':
 				file = '%s/%s.py' % (config.ROOT[0:config.ROOT.rfind('/')], page_name.replace('.', '/'))
 
 			if os.path.isfile(file):
-				page_loaded = importlib.import_module(page_name, '%s.pages' % folder)
+				page_loaded = importlib.import_module(page_name, package)
 
 				return getattr(page_loaded, page)
 			else:
