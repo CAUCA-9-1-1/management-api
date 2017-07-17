@@ -37,6 +37,7 @@ create table tbl_apis_action
 	params text,
 	action_object varchar(50),
 	action_object_id uuid,
+	action_ip varchar(40),
 	action_time timestamp default now()
 )
 ;

@@ -3,6 +3,7 @@ from .webuser import Webuser
 from ..core.database import Database
 from ..core.token import Token
 from ..models.access_token import AccessToken
+from ..models.apis_action import ApisAction
 
 
 class Auth(Token, Base):
@@ -21,6 +22,17 @@ class Auth(Token, Base):
 
 		with Database() as db:
 			data = db.query(AccessToken).filter(AccessToken.access_token == token).first()
+
+			if data is None or self.valid_token(token) is False:
+				raise Exception("Invalid token id")
+
+			user = Webuser().get(data.id_webuser)
+			apis = db.query(ApisAction).filter(
+				ApisAction.id_webuser == data.id_webuser).order_by(
+				ApisAction.action_time.desc()).first()
+
+			data.username = user['data'].username
+			data.user_ip = apis.action_ip
 
 		return {
 			'data': data

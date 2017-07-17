@@ -97,10 +97,8 @@ class ConfigBase:
 				return getattr(page_loaded, page)
 			else:
 				return None
-		except Exception as e:
-			logging.exception("Loading exception on page '%s': %s", page_name, e)
-
-			return None
+		except SystemError as e:
+			raise Exception("Loading exception on page '%s': %s" % (page_name, e))
 
 	def complete(self):
 		self.add_config({

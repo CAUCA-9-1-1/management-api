@@ -1,4 +1,5 @@
 import uuid
+import cherrypy
 from datetime import datetime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, DateTime, String, Text
@@ -16,6 +17,7 @@ class ApisAction(Base):
 	params = Column(Text)
 	action_object = Column(String(50))
 	action_object_id = Column(String(36))
+	action_ip = Column(String(40))
 	action_time = Column(DateTime, default=datetime.now)
 
 	def __init__(self, id_webuser, method, params, action_object, action_object_id):
@@ -25,3 +27,4 @@ class ApisAction(Base):
 		self.params = params
 		self.action_object = action_object
 		self.action_object_id = action_object_id
+		self.action_ip = cherrypy.request.headers["Remote-Addr"]
