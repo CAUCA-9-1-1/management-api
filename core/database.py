@@ -48,13 +48,20 @@ class Database:
 	def execute(self, query, args=()):
 		result = self.engine.execute(query, args)
 
-		return self.fecth_assoc(result.fetchall(), result.keys())
+		if result is None or result.returns_rows is False:
+			return None
+
+		return self.fetch_assoc(result.fetchall(), result.keys())
 
 	def callproc(self, procedure, args=()):
 		cursor = self.engine.raw_connection().cursor()
+
+		if cursor is None:
+			return None
+
 		cursor.callproc(procedure, args)
 
-		return self.fecth_assoc(cursor.fetchall(), self.keys_of_cursor(cursor))
+		return self.fetch_assoc(cursor.fetchall(), self.keys_of_cursor(cursor))
 
 	def get_row(self, query, args=()):
 		result = self.engine.execute(query, args)
@@ -93,7 +100,7 @@ class Database:
 
 		return keys
 
-	def fecth_assoc(self, rows, keys=None):
+	def fetch_assoc(self, rows, keys=None):
 		result = list()
 
 		try:
