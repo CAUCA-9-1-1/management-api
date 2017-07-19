@@ -84,8 +84,10 @@ class ExecuteApiClass:
 			}
 			return_data = self.exec_method(name, args)
 
-			if isinstance(return_data, dict) and config.FORCE_CAMELCASE:
+			if isinstance(return_data, dict) and config.FORCE_CAMELCASE is True:
 				return_data = CaseFormat().object_snake_to_camel(return_data)
+			if isinstance(return_data, dict):
+				return_data = CaseFormat().convert(return_data)
 
 			data.update(return_data)
 

@@ -3,7 +3,29 @@ from sqlalchemy.ext.declarative import DeclarativeMeta
 from .json import JsonEncoder
 
 class CaseFormat:
+	def convert(self, data):
+		if isinstance(data, object) and isinstance(data.__class__, DeclarativeMeta):
+			return JsonEncoder.sqlalchemy_to_dict(data)
+
+		if isinstance(data, list):
+			new_data = list()
+			for pos, val in enumerate(data):
+				new_data.append(self.convert(val))
+
+			return new_data
+
+		if isinstance(data, dict):
+			for key in data:
+				data[key] = self.convert(data[key])
+
+			return data
+
+		return data
+
 	def object_camel_to_snake(self, data):
+		if isinstance(data, object) and isinstance(data.__class__, DeclarativeMeta):
+			data = JsonEncoder.sqlalchemy_to_dict(data)
+
 		if not isinstance(data, tuple) and not isinstance(data, list) and not isinstance(data, dict):
 			return data
 

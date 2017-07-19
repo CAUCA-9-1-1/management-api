@@ -25,7 +25,7 @@ class Session:
 			'Authorization': 'Token %s' % Session.get('access_token')
 		}))
 
-		if 'data' in data:
+		if 'data' in data and data['data'] is not None:
 			for permission in data['data']:
 				if permission['feature_name'] == feature_name:
 					return True

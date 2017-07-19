@@ -116,7 +116,7 @@ class PageWithDevextreme:
 				'Authorization': 'Token %s' % config.WEBSERVICE['access_token']
 			}))
 
-			if permission is not None and 'data' in permission:
+			if permission is not None and 'data' in permission and permission['data'] is not None:
 				for feature in permission['data']:
 					access.append(feature['feature_name'])
 
