@@ -118,7 +118,8 @@ class PageWithDevextreme:
 
 			if permission is not None and 'data' in permission and permission['data'] is not None:
 				for feature in permission['data']:
-					access.append(feature['feature_name'])
+					if feature['access'] is True:
+						access.append(feature['feature_name'])
 
 		self.to_head("""
 				<script>
