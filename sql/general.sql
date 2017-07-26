@@ -32,7 +32,7 @@ create table tbl_apis_action
 	id_apis_action uuid not null
 		constraint tbl_field_action_pkey
 			primary key,
-	id_webuser uuid not null,
+	id_webuser uuid,
 	method varchar(10),
 	params text,
 	action_object varchar(50),
