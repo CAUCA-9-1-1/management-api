@@ -17,25 +17,25 @@ class Request:
 		if url is not None:
 			self.url = url
 
+		if data is None:
+			data = ''
+		else:
+			data = urllib.parse.urlencode(data)
+
+		if self.method == 'GET':
+			request = urllib.request.Request(self.url + ('?' if data else '') + data, method=self.method)
+		else:
+			#data = data.replace('+', '%20')
+			request = urllib.request.Request(self.url, data.encode('ascii'), method=self.method)
+
+		if headers is not None:
+			for key in headers:
+				request.add_header(key, headers[key])
+
 		try:
-			if data is None:
-				data = ''
-			else:
-				data = urllib.parse.urlencode(data)
-
-			if self.method == 'GET':
-				request = urllib.request.Request(self.url + ('?' if data else '') + data, method=self.method)
-			else:
-				#data = data.replace('+', '%20')
-				request = urllib.request.Request(self.url, data.encode('ascii'), method=self.method)
-
-			if headers is not None:
-				for key in headers:
-					request.add_header(key, headers[key])
+			logging.info('Url = %s, Method = %s, Data = %s' % (self.url, self.method, str(data)))
 
 			with urllib.request.urlopen(request) as response:
-				logging.info('Url = %s, Method = %s, Data = %s' % (self.url, self.method, str(data)))
-
 				if response.status == 200:
 					html = response.read().decode('UTF-8')
 
@@ -43,6 +43,6 @@ class Request:
 				else:
 					logging.exception('Response.status = %s' % str(response.status))
 		except Exception as e:
-			logging.exception("Error during request")
+			logging.exception("Error during request, we can't access to %s" % self.url)
 
 		return html
