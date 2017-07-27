@@ -42,7 +42,7 @@ class Request:
 					logging.info('Response = %s' % html)
 				else:
 					logging.exception('Response.status = %s' % str(response.status))
-		except urllib.error.HTTPError:
+		except urllib.error.HTTPError or urllib.error.URLError:
 			logging.exception("Error during request, we can't access to %s" % self.url)
 
 		return html

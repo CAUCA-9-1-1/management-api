@@ -29,6 +29,10 @@ class ApiUrl(ExecuteApiClass):
 		return self.call_method('PermissionSystemFeature', self.get_argument(args, kwargs))
 
 	@cherrypy.expose
+	def permissionsystem(self, *args, **kwargs):
+		return self.call_method('PermissionSystem', self.get_argument(args, kwargs))
+
+	@cherrypy.expose
 	def permissionobject(self, *args, **kwargs):
 		return self.call_method('PermissionObject', self.get_argument(args, kwargs))
 

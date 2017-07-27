@@ -21,14 +21,3 @@ create table tbl_webuser_attributes
 )
 ;
 
-create table tbl_webuser_fire_safety_department
-(
-	id_webuser_fire_safety_department uuid not null
-		constraint tbl_webuser_fire_safety_dept_id_user_fire_safety_dept_pk
-			primary key,
-	id_webuser uuid not null,
-	id_fire_safety_department uuid not null,
-	created_on timestamp default now(),
-  is_active boolean default true not null
-)
-;
