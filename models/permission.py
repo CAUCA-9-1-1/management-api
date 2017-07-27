@@ -15,6 +15,10 @@ class PermissionSystem(Base):
 	id_permission_system = Column(String(36), primary_key=True)
 	description = Column(String(400))
 
+	def __init__(self, id_permission_system, description):
+		self.id_permission_system = id_permission_system
+		self.description = description
+
 
 class PermissionSystemFeature(Base):
 	__tablename__ = "tbl_permission_system_feature"

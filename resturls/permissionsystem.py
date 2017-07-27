@@ -1,6 +1,5 @@
 import uuid
 from .base import Base
-from ..config import setup as config
 from ..core.database import Database
 from ..models.permission import PermissionSystem as Table
 
