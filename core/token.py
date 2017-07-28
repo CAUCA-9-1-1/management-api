@@ -2,9 +2,12 @@ import datetime
 import hashlib
 import random
 import uuid
+
 import cherrypy
+
 from .database import Database
 from ..config import setup as config
+from ..core.exceptions import AuthentificationException
 from ..models.access_secretkey import AccessSecretkey
 from ..models.access_token import AccessToken
 from ..resturls.base import Base
@@ -32,7 +35,7 @@ class Token:
 				}
 			}
 		else:
-			raise Exception("authentification failed")
+			raise AuthentificationException("authentification failed")
 
 	def generate_secretkey(self, name):
 		randomkey = str(random.getrandbits(256))

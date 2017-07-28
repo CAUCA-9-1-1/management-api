@@ -1,0 +1,2 @@
+class AuthentificationException(Exception):
+	pass
