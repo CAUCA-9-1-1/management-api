@@ -32,7 +32,7 @@ class Auth(Token, Base):
 				ApisAction.action_time.desc()).first()
 
 			data.username = user['data'].username
-			data.user_ip = apis.action_ip
+			data.user_ip = apis.action_ip if apis is not None else None
 
 		return {
 			'data': data
