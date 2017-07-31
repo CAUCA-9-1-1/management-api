@@ -2,6 +2,7 @@ import json
 
 from ..config import setup as config
 from ..core.database import Database
+from ..core.exceptions import PermissionException
 from ..models.apis_action import ApisAction as Table
 from ..models.permission import Permission, PermissionSystemFeature, PermissionObject
 
@@ -64,6 +65,4 @@ class Base:
 		return False
 
 	def no_access(self):
-		return {
-			'error': 'check your access'
-		}
+		raise PermissionException('check your access')

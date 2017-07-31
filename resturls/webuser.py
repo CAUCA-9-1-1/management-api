@@ -68,7 +68,7 @@ class Webuser(Base):
 
 	def modify(self, args):
 		if self.has_permission('RightAdmin') is False:
-			return self.no_access()
+			self.no_access()
 
 		if 'id_webuser' not in args:
 			raise Exception("You need to pass a id_webuser")
