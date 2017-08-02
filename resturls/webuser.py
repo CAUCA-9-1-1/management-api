@@ -33,6 +33,18 @@ class Webuser(Base):
 			'data': data
 		}
 
+	def get_attribute(self, key):
+		user = self.get(Base.logged_id_webuser)
+
+		if 'data' not in user or user['data'] is None:
+			return None
+		if user['data'].attributes is None:
+			return None
+		if key not in user['data'].attributes or user['data'].attributes[key] is None:
+			return None
+
+		return user['data'].attributes[key]
+
 	def logon(self, username, password):
 		with Database() as db:
 			data = db.query(Table).filter(

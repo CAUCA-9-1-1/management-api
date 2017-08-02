@@ -15,27 +15,27 @@ from ..resturls.webuser import Webuser
 
 
 class Token:
-	def logon(self, args):
-		if Webuser().logon(args['username'], args['password']):
-			id_access_token = uuid.uuid4()
-			access_token = self.generate_token()
-			refresh_token = self.generate_token()
-
-			with Database() as db:
-				db.insert(AccessToken(id_access_token, Base.logged_id_webuser, access_token, refresh_token, self.expires_in_minutes * 60))
-				db.commit()
-
-			return {
-				'data': {
-					'authorization_type': 'Token',
-					'expires_in': (self.expires_in_minutes * 60),
-					'access_token': access_token,
-					'refresh_token': refresh_token,
-					'id_webuser': Base.logged_id_webuser,
-				}
-			}
-		else:
+	def logon(self, args=None):
+		if args is None or Webuser().logon(args['username'], args['password']) is False:
 			raise AuthentificationException("authentification failed")
+
+		id_access_token = uuid.uuid4()
+		access_token = self.generate_token()
+		refresh_token = self.generate_token()
+
+		with Database() as db:
+			db.insert(AccessToken(id_access_token, Base.logged_id_webuser, access_token, refresh_token, self.expires_in_minutes * 60))
+			db.commit()
+
+		return {
+			'data': {
+				'authorization_type': 'Token',
+				'expires_in': (self.expires_in_minutes * 60),
+				'access_token': access_token,
+				'refresh_token': refresh_token,
+				'id_webuser': Base.logged_id_webuser,
+			}
+		}
 
 	def generate_secretkey(self, name):
 		randomkey = str(random.getrandbits(256))

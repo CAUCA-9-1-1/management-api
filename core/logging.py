@@ -15,7 +15,7 @@ class Logging:
 			os.makedirs("%s/data/%s/" % (config.ROOT, 'logs'))
 
 		self.activate_logging()
-		self.enable_debug_console()
+		#self.enable_debug_console()
 
 	def activate_logging(self):
 		"""Enable file logging in application using the configuration.
