@@ -2,6 +2,7 @@ import importlib.util
 import json
 import logging
 import os
+
 import cherrypy
 from ..config import setup as config
 from .json import JsonEncoder
@@ -92,6 +93,32 @@ class ExecuteApiClass:
 			data.update(return_data)
 
 			return json.dumps(data, cls=JsonEncoder)
+		except Exception as e:
+			logging.exception("Error from api class")
+
+			return json.dumps({
+				'success': False,
+				'error': e,
+				'data': None
+			}, cls=JsonEncoder)
+
+	def call_method_image(self, name, args):
+		if cherrypy.request.method == 'OPTIONS':
+			return json.dumps({
+				'success': True,
+				'error': '',
+			})
+
+		try:
+			data = {
+				'success': True,
+				'error': ''
+			}
+			cherrypy.response.headers["Content-Type"] = "image/png"
+			return_data = self.exec_method(name, args)
+
+			return return_data
+
 		except Exception as e:
 			logging.exception("Error from api class")
 
