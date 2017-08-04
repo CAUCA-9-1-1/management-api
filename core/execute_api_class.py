@@ -102,7 +102,7 @@ class ExecuteApiClass:
 				'data': None
 			}, cls=JsonEncoder)
 
-	def call_method_image(self, name, args):
+	"""def call_method_image(self, name, args):
 		if cherrypy.request.method == 'OPTIONS':
 			return json.dumps({
 				'success': True,
@@ -110,14 +110,10 @@ class ExecuteApiClass:
 			})
 
 		try:
-			data = {
-				'success': True,
-				'error': ''
-			}
-			cherrypy.response.headers["Content-Type"] = "image/png"
 			return_data = self.exec_method(name, args)
+			cherrypy.response.headers["Content-Type"] = "image/png"
 
-			return return_data
+			return base64.b64encode(return_data)# return_data
 
 		except Exception as e:
 			logging.exception("Error from api class")
@@ -126,7 +122,7 @@ class ExecuteApiClass:
 				'success': False,
 				'error': e,
 				'data': None
-			}, cls=JsonEncoder)
+			}, cls=JsonEncoder)"""
 
 	def get_argument(self, args, kwargs):
 		arguments = ()
