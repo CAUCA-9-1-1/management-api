@@ -1,13 +1,13 @@
-import importlib.util
+import os
 import json
 import logging
-import os
-
 import cherrypy
+import importlib.util
 from ..config import setup as config
 from .json import JsonEncoder
 from .token import Token
 from .case_format import CaseFormat
+from .exceptions import *
 
 
 class ExecuteApiClass:
@@ -65,11 +65,7 @@ class ExecuteApiClass:
 
 			return api_method(class_object(), *args)
 		else:
-			return {
-				'success': False,
-				'login': False,
-				'error': "Login failed",
-			}
+			raise AuthentificationException()
 
 	def call_method(self, name, args):
 		if cherrypy.request.method == 'OPTIONS':
@@ -95,6 +91,13 @@ class ExecuteApiClass:
 			return json.dumps(data, cls=JsonEncoder)
 		except Exception as e:
 			logging.exception("Error from api class")
+
+			if isinstance(e, AuthentificationException):
+				cherrypy.response.status = "401 Unauthorized"
+			elif isinstance(e, PermissionException):
+				cherrypy.response.status = "403 Forbidden"
+			else:
+				cherrypy.response.status = "400 Bad Request"
 
 			return json.dumps({
 				'success': False,
