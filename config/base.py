@@ -7,12 +7,13 @@ from ..core.case_format import CaseFormat
 
 
 class ConfigBase:
+	base_config = {}
 	cherrypy_version = 0
 
 	def __init__(self, specific_base_config=None):
-		self.cherrypy_version = int(cherrypy.__version__.split('.', 1)[0])
-		self.site_config = {}
-		self.base_config = {
+		ConfigBase.cherrypy_version = int(cherrypy.__version__.split('.', 1)[0])
+		ConfigBase.site_config = {}
+		ConfigBase.base_config = {
 			'tools.sessions.on': True,
 			'tools.sessions.name': config.PACKAGE_NAME,
 			'tools.sessions.storage_path': 'data/sessions',
@@ -22,68 +23,75 @@ class ConfigBase:
 			'tools.staticdir.root': os.path.abspath(os.getcwd()),
 			'log.screen': config.IS_DEV,
 		}
-		self.static_config = {
+		ConfigBase.static_config = {
 			'tools.staticdir.on': True,
 			'tools.staticdir.dir': 'static'
 		}
 
-		self.create_basic_folder()
-		self.check_uwsgi()
-		self.config_session()
+		ConfigBase.create_basic_folder()
+		ConfigBase.check_uwsgi()
+		ConfigBase.config_session()
 
 		if specific_base_config is not None:
-			self.base_config.update(specific_base_config)
+			ConfigBase.base_config.update(specific_base_config)
 
-		self.add_config({
-			'/': self.base_config
+			ConfigBase.add_config({
+			'/': ConfigBase.base_config
 		})
 
-	def create_basic_folder(self):
-		self.add_folder('data')
-		self.add_folder('data/logs')
-		self.add_folder('data/sessions')
+	@staticmethod
+	def create_basic_folder():
+		ConfigBase.add_folder('data')
+		ConfigBase.add_folder('data/logs')
+		ConfigBase.add_folder('data/sessions')
 
-	def check_uwsgi(self):
+	@staticmethod
+	def check_uwsgi():
 		if config.IS_UWSGI is False:
 			# We skip this configuration on UWSGI because cherrypy open to many log file
-			self.base_config.update({
+			ConfigBase.base_config.update({
 				'log.access_file': '%s/data/logs/cherrypy_access.log' % config.ROOT,
 				'log.error_file': '%s/data/logs/cherrypy_error.log' % config.ROOT,
 			})
 
-	def config_session(self):
-		if self.cherrypy_version > 8:
-			self.base_config.update({
+	@staticmethod
+	def config_session():
+		if ConfigBase.cherrypy_version > 8:
+			ConfigBase.base_config.update({
 				'tools.sessions.storage_class': cherrypy.lib.sessions.FileSession
 			})
 		else:
-			self.base_config.update({
+			ConfigBase.base_config.update({
 				'tools.sessions.storage_type': 'File'
 			})
 
-	def add_config(self, element):
-		self.site_config.update(element)
+	@staticmethod
+	def add_config(element):
+		ConfigBase.site_config.update(element)
 
-	def add_folder(self, path):
+	@staticmethod
+	def add_folder(path):
 		if not os.path.exists("%s/%s/" % (config.ROOT, path)):
 			os.makedirs("%s/%s/" % (config.ROOT, path))
 
-	def add_page(self, page, path=None):
+	@staticmethod
+	def add_page(page, path=None):
 		for folder in config.SEARCH_FOLDERS:
-			page_class = self.add_page_from(folder, page)
+			page_class = ConfigBase.add_page_from(folder, page)
 
 			if page_class is not None:
 				break
 
 		if page_class is None:
 			logging.exception("Can't mount the page: %s, config: %s" % (
-				page, self.site_config
+				page, ConfigBase.site_config
 			))
 		else:
 			path = path if path is not None else '/%s' % page.lower()
-			cherrypy.tree.mount(page_class(), path, self.site_config)
+			cherrypy.tree.mount(page_class(), path, ConfigBase.site_config)
 
-	def add_page_from(self, package, page):
+	@staticmethod
+	def add_page_from(package, page):
 		try:
 			page_name = "%s.%s" % (package, CaseFormat().pascal_to_snake(page))
 
@@ -100,8 +108,14 @@ class ConfigBase:
 		except SystemError as e:
 			raise Exception("Loading exception on page '%s': %s" % (page_name, e))
 
-	def complete(self):
-		self.add_config({
+	@staticmethod
+	def add_route(name, route, controller, action):
+		if 'request.dispatch' in ConfigBase.base_config:
+			ConfigBase.base_config['request.dispatch'].connect(name=name, route=route, controller=controller, action=action)
+
+	@staticmethod
+	def complete():
+		ConfigBase.add_config({
 			'server.environment': 'production' if config.IS_DEV is False else 'test_suite',
 			'request.show_tracebacks': config.IS_DEV,
 		})

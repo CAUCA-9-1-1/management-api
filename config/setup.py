@@ -26,7 +26,7 @@ DATABASE = {
 # Logs
 LOGS_NAME = 'cause-api-management'
 LOGS = {
-	'level': 'info',
+	'level': 'error',
 	'format': '%(asctime)s:%(name)s/%(funcName)s()@%(lineno)d:%(levelname)s:%(message)s',
 }
 

@@ -15,8 +15,8 @@ from ..resturls.webuser import Webuser
 
 
 class Token:
-	def logon(self, args=None):
-		if args is None or Webuser().logon(args['username'], args['password']) is False:
+	def logon(self, username=None, password=None):
+		if username is None or Webuser().logon(username, password) is False:
 			raise AuthentificationException("authentification failed")
 
 		id_access_token = uuid.uuid4()

@@ -1,9 +1,10 @@
+import cherrypy
 from . import setup as config
 from .base import ConfigBase
 
 
 class ConfigApi(ConfigBase):
-	def __init__(self, specific_base_config={}):
+	def __init__(self, specific_base_config={}, use_complex_routing=False):
 		specific_base_config.update({
 			'tools.response_headers.on': True,
 			'tools.response_headers.headers': [
@@ -14,9 +15,23 @@ class ConfigApi(ConfigBase):
 			],
 		})
 
+		if use_complex_routing:
+			dispatcher = cherrypy.dispatch.RoutesDispatcher()
+
+			specific_base_config.update({
+				'request.dispatch': dispatcher
+			})
+
 		ConfigBase.__init__(self, specific_base_config)
 
-	def complete(self):
-		self.add_page('ApiUrl', config.WEBROOT)
+	@staticmethod
+	def complete():
+		if 'request.dispatch' not in ConfigApi.base_config:
+			ConfigApi.add_page('ApiUrl', config.WEBROOT)
+		else:
+			cherrypy.tree.mount(
+				root=None,
+				config=ConfigApi.site_config
+			)
 
-		ConfigBase.complete(self)
+		ConfigBase.complete()

@@ -1,16 +1,29 @@
-import json
 import cherrypy
-from .config import setup as config
+from .core.route_url import RouteUrl
 from .core.execute_api_class import ExecuteApiClass
 
 
 class ApiUrl(ExecuteApiClass):
+	def __init__(self):
+		super(ApiUrl, self).__init__()
+
+		RouteUrl('/', 'Root', None, 'index')
+		RouteUrl('/accesssecretkey/', 'AccessSecretkey')
+		RouteUrl('/auth/', 'Auth')
+		RouteUrl('/auth/:token', 'Auth', 'GET', 'token')
+		RouteUrl('/apisaction/', 'ApisAction')
+		RouteUrl('/permission/:id_permission_object', 'Permission')
+		RouteUrl('/permissionobject/', 'PermissionObject')
+		RouteUrl('/permissionobject/:id_permission_object', 'PermissionObject')
+		RouteUrl('/permissionsystem/', 'PermissionSystem')
+		RouteUrl('/permissionsystemfeature/', 'PermissionSystemFeature')
+		RouteUrl('/permissionwebuser/', 'PermissionWebuser')
+		RouteUrl('/webuser/', 'Webuser')
+		RouteUrl('/webuserstatistic/', 'WebuserStatistic')
+
 	@cherrypy.expose
-	def index(self):
-		return json.dumps({
-			'name': config.PACKAGE_NAME,
-			'version': config.PACKAGE_VERSION
-		})
+	def index(self, *args, **kwargs):
+		return self.call_method('Root', self.get_argument(args, kwargs))
 
 	@cherrypy.expose
 	def accesssecretkey(self, *args, **kwargs):
@@ -25,20 +38,20 @@ class ApiUrl(ExecuteApiClass):
 		return self.call_method('ApisAction', self.get_argument(args, kwargs))
 
 	@cherrypy.expose
-	def permissionsystemfeature(self, *args, **kwargs):
-		return self.call_method('PermissionSystemFeature', self.get_argument(args, kwargs))
-
-	@cherrypy.expose
-	def permissionsystem(self, *args, **kwargs):
-		return self.call_method('PermissionSystem', self.get_argument(args, kwargs))
+	def permission(self, *args, **kwargs):
+		return self.call_method('Permission', self.get_argument(args, kwargs))
 
 	@cherrypy.expose
 	def permissionobject(self, *args, **kwargs):
 		return self.call_method('PermissionObject', self.get_argument(args, kwargs))
 
 	@cherrypy.expose
-	def permission(self, *args, **kwargs):
-		return self.call_method('Permission', self.get_argument(args, kwargs))
+	def permissionsystem(self, *args, **kwargs):
+		return self.call_method('PermissionSystem', self.get_argument(args, kwargs))
+
+	@cherrypy.expose
+	def permissionsystemfeature(self, *args, **kwargs):
+		return self.call_method('PermissionSystemFeature', self.get_argument(args, kwargs))
 
 	@cherrypy.expose
 	def permissionwebuser(self, *args, **kwargs):
