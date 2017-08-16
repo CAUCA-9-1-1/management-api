@@ -12,6 +12,7 @@ class ApiUrl(ExecuteApiClass):
 		RouteUrl('/auth/', 'Auth')
 		RouteUrl('/auth/:token', 'Auth', 'GET', 'token')
 		RouteUrl('/apisaction/', 'ApisAction')
+		RouteUrl('/permission/', 'Permission')
 		RouteUrl('/permission/:id_permission_object', 'Permission')
 		RouteUrl('/permissionobject/', 'PermissionObject')
 		RouteUrl('/permissionobject/:id_permission_object', 'PermissionObject')
@@ -19,7 +20,7 @@ class ApiUrl(ExecuteApiClass):
 		RouteUrl('/permissionsystemfeature/', 'PermissionSystemFeature')
 		RouteUrl('/permissionwebuser/', 'PermissionWebuser')
 		RouteUrl('/webuser/', 'Webuser')
-		RouteUrl('/webuserstatistic/', 'WebuserStatistic')
+		RouteUrl('/webuserstatistic/:type/:period_start/:period_end', 'WebuserStatistic')
 
 	@cherrypy.expose
 	def index(self, *args, **kwargs):

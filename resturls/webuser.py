@@ -58,42 +58,42 @@ class Webuser(Base):
 
 		return False
 
-	def create(self, args):
+	def create(self, body):
 		id_webuser = uuid.uuid4()
 		is_active = self.has_permission('RightAdmin')
 
-		if 'username' not in args or 'password' not in args:
+		if 'username' not in body or 'password' not in body:
 			raise Exception("You need to pass a 'username' and 'password'")
 
 		with Database() as db:
-			webuser = Table(id_webuser, args['username'], args['password'], is_active)
+			webuser = Table(id_webuser, body['username'], body['password'], is_active)
 			db.insert(webuser)
 			db.commit()
 
-			if 'attributes' in args:
-				webuser.set_attributes(id_webuser, args['attributes'])
+			if 'attributes' in body:
+				webuser.set_attributes(id_webuser, body['attributes'])
 
 		return {
 			'id_webuser': id_webuser,
 			'message': 'webuser successfully created'
 		}
 
-	def modify(self, args):
+	def modify(self, body):
 		if self.has_permission('RightAdmin') is False:
 			self.no_access()
 
-		if 'id_webuser' not in args:
+		if 'id_webuser' not in body:
 			raise Exception("You need to pass a id_webuser")
 
 		with Database() as db:
-			data = db.query(Table).get(args['id_webuser'])
+			data = db.query(Table).get(body['id_webuser'])
 
-			if 'username' in args:
-				data.username = args['username']
-			if 'password' in args:
-				data.password = Encryption.password(args['password'])
-			if 'attributes' in args:
-				data.set_attributes(args['id_webuser'], args['attributes'])
+			if 'username' in body:
+				data.username = body['username']
+			if 'password' in body:
+				data.password = Encryption.password(body['password'])
+			if 'attributes' in body:
+				data.set_attributes(body['id_webuser'], body['attributes'])
 
 			db.commit()
 

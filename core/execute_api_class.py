@@ -103,6 +103,9 @@ class ExecuteApiClass(LoadClass):
 					else:
 						arguments[key] = None
 
+		if config.FORCE_CAMELCASE:
+			return CaseFormat().object_camel_to_snake(arguments)
+
 		return arguments
 
 	def get_argument(self, args, kwargs):
@@ -111,9 +114,6 @@ class ExecuteApiClass(LoadClass):
 
 		if args is not ():
 			arguments['path'] = args
-
-		if config.FORCE_CAMELCASE:
-			return CaseFormat().object_camel_to_snake(arguments)
 
 		return arguments
 

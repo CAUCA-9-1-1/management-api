@@ -43,16 +43,16 @@ class Permission(Base):
 			'data': data
 		}
 
-	def create(self, args):
-		if 'id_permission_object' not in args or 'id_permission_system_feature' not in args or 'access' not in args:
+	def create(self, body):
+		if 'id_permission_object' not in body or 'id_permission_system_feature' not in body or 'access' not in body:
 			raise Exception("You need to pass a 'id_permission_object', 'id_permission_system_feature' and 'access'")
 
 		id_permission = uuid.uuid4()
 
 		with Database() as db:
 			db.insert(Table(
-				id_permission, args['id_permission_object'], config.PERMISSION['systemID'],
-				args['id_permission_system_feature'], args['access']
+				id_permission, body['id_permission_object'], config.PERMISSION['systemID'],
+				body['id_permission_system_feature'], body['access']
 			))
 			db.commit()
 
@@ -61,15 +61,15 @@ class Permission(Base):
 			'message': 'permission successfully created'
 		}
 
-	def modify(self, args):
-		if 'id_permission' not in args:
+	def modify(self, body):
+		if 'id_permission' not in body:
 			raise Exception("You need to pass a 'id_permission'")
 
 		with Database() as db:
-			data = db.query(Table).get(args['id_permission'])
+			data = db.query(Table).get(body['id_permission'])
 
-			if 'access' in args:
-				data.access = args['access']
+			if 'access' in body:
+				data.access = body['access']
 
 			db.commit()
 
