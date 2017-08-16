@@ -10,7 +10,8 @@ class RouteUrl(ExecuteApiClass):
 		self.method = method
 		self.action = action
 
-		ConfigApi.add_route(route.replace('/', '-'), route[0:-1], self, 'execute_custom_url')
+		if route[-1] == '/':
+			ConfigApi.add_route(route.replace('/', '-'), route[0:-1], self, 'execute_custom_url')
 		ConfigApi.add_route(route.replace('/', '-'), route, self, 'execute_custom_url')
 
 	def execute_custom_url(self, **kwargs):
