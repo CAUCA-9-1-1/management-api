@@ -38,5 +38,5 @@ class Auth(Token, Base):
 			'data': data
 		}
 
-	def register(self, args):
-		return Webuser().create(args)
+	def register(self, body):
+		return Webuser().create(body)

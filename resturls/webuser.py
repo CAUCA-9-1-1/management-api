@@ -110,3 +110,8 @@ class Webuser(Base):
 		return {
 			'message': 'webuser successfully removed'
 		}
+
+	def test(self, arg2, arg1):
+		return {
+			'message': 'webuser successfully test (%s, %s)' % (arg1, arg2)
+		}

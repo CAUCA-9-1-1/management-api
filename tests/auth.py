@@ -10,10 +10,7 @@ class TestAuth(unittest.TestCase):
 
 	def test_01_logon(self):
 		try:
-			result = Auth().logon({
-				'username': 'test',
-				'password': 'testtest'
-			})
+			result = Auth().logon('test', 'testtest')
 
 			self.__class__.token = result['data']['access_token']
 		except AuthentificationException:
