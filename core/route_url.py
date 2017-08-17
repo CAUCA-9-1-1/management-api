@@ -11,8 +11,8 @@ class RouteUrl(ExecuteApiClass):
 		self.action = action
 
 		if route[-1] == '/':
-			ConfigApi.add_route(route.replace('/', '-'), route[0:-1], self, 'execute_custom_url')
-		ConfigApi.add_route(route.replace('/', '-'), route, self, 'execute_custom_url')
+			ConfigApi.add_route(route.replace('/', '-'), route[0:-1], self, 'execute_custom_url', method)
+		ConfigApi.add_route(route.replace('/', '-'), route, self, 'execute_custom_url', method)
 
 	def execute_custom_url(self, **kwargs):
 		if cherrypy.request.method == 'OPTIONS':

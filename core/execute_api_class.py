@@ -83,12 +83,15 @@ class ExecuteApiClass(LoadClass):
 		return False
 
 	def get_body(self):
-		body = cherrypy.request.body.readlines()
+		try:
+			body = cherrypy.request.body.readlines()
 
-		if body and body[0] is not '':
-			return json.loads(body[0].decode('utf-8'))
-
-		return {}
+			if body and body[0] is not '':
+				return json.loads(body[0].decode('utf-8'))
+			else:
+				return {}
+		except TypeError:
+			return {}
 
 	def get_ask_parameters(self, kwargs, args):
 		arguments = {}
