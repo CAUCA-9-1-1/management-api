@@ -4,7 +4,7 @@ from .base import ConfigBase
 
 
 class ConfigApi(ConfigBase):
-	def __init__(self, specific_base_config={}, use_complex_routing=False):
+	def __init__(self, specific_base_config={}, use_complex_routing=None):
 		specific_base_config.update({
 			'tools.response_headers.on': True,
 			'tools.response_headers.headers': [
