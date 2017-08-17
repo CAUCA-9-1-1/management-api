@@ -67,7 +67,7 @@ class ExecuteApiClass(LoadClass):
 				if cherrypy.request.method in method_mapping and method_mapping[cherrypy.request.method]:
 					return method_mapping[cherrypy.request.method]
 
-		return action
+		return None
 
 	def has_access(self, controller):
 		try:
@@ -97,9 +97,9 @@ class ExecuteApiClass(LoadClass):
 			for key in args.parameters:
 				if key is not 'self':
 					if key in kwargs:
-						arguments[key] = kwargs[key]
+						arguments[key] = self.convert_argument(kwargs[key])
 					elif key in kwargs['body']:
-						arguments[key] = kwargs['body'][key]
+						arguments[key] = self.convert_argument(kwargs['body'][key])
 					else:
 						arguments[key] = None
 
