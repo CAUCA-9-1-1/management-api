@@ -109,9 +109,17 @@ class ConfigBase:
 			raise Exception("Loading exception on page '%s': %s" % (page_name, e))
 
 	@staticmethod
-	def add_route(name, route, controller, action):
+	def add_route(name, route, controller, action, method=None):
 		if 'request.dispatch' in ConfigBase.base_config:
-			ConfigBase.base_config['request.dispatch'].connect(name=name, route=route, controller=controller, action=action)
+			if method is None:
+				ConfigBase.base_config['request.dispatch'].connect(
+					name=name, route=route, controller=controller, action=action
+				)
+			else:
+				ConfigBase.base_config['request.dispatch'].connect(
+					name=name, route=route, controller=controller,
+					action=action, conditions={"method": [method]}
+				)
 
 	@staticmethod
 	def complete():
