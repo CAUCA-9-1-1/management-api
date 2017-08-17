@@ -7,7 +7,7 @@ class ApiUrl(ExecuteApiClass):
 	def __init__(self):
 		super(ApiUrl, self).__init__()
 
-		RouteUrl('/', 'Root', None, 'index')
+		RouteUrl('/', 'Root', 'ALL', 'index')
 		RouteUrl('/accesssecretkey/', 'AccessSecretkey')
 		RouteUrl('/auth/', 'Auth')
 		RouteUrl('/auth/:token', 'Auth', 'GET', 'token')

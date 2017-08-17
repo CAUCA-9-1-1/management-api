@@ -4,7 +4,7 @@ from .base import ConfigBase
 
 
 class ConfigApi(ConfigBase):
-	def __init__(self, specific_base_config={}, use_complex_routing=None):
+	def __init__(self, specific_base_config={}, build_routing_object=None):
 		specific_base_config.update({
 			'tools.response_headers.on': True,
 			'tools.response_headers.headers': [
@@ -15,14 +15,16 @@ class ConfigApi(ConfigBase):
 			],
 		})
 
-		if use_complex_routing:
+		ConfigBase.__init__(self, specific_base_config)
+
+		if build_routing_object is not None:
 			dispatcher = cherrypy.dispatch.RoutesDispatcher()
 
-			specific_base_config.update({
+			ConfigBase.base_config.update({
 				'request.dispatch': dispatcher
 			})
 
-		ConfigBase.__init__(self, specific_base_config)
+			build_routing_object()
 
 	@staticmethod
 	def complete():

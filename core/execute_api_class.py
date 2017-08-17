@@ -57,7 +57,7 @@ class ExecuteApiClass(LoadClass):
 		return json.dumps(data, cls=JsonEncoder)
 
 	def has_method(self, controller, method=None, action=None):
-		if method == cherrypy.request.method:
+		if method == cherrypy.request.method or method == 'ALL':
 			return action
 
 		if method is None and action is None:
