@@ -111,7 +111,7 @@ class ConfigBase:
 	@staticmethod
 	def add_route(name, route, controller, action, method=None):
 		if 'request.dispatch' in ConfigBase.base_config:
-			if method is None:
+			if method is None or method == 'ALL':
 				ConfigBase.base_config['request.dispatch'].connect(
 					name=name, route=route, controller=controller, action=action
 				)
