@@ -118,7 +118,7 @@ class ConfigBase:
 			else:
 				ConfigBase.base_config['request.dispatch'].connect(
 					name=name, route=route, controller=controller,
-					action=action, conditions={"method": [method]}
+					action=action, conditions={"method": ['OPTIONS', method]}
 				)
 
 	@staticmethod
