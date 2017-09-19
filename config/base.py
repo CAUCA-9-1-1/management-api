@@ -35,7 +35,7 @@ class ConfigBase:
 		if specific_base_config is not None:
 			ConfigBase.base_config.update(specific_base_config)
 
-			ConfigBase.add_config({
+		ConfigBase.add_config({
 			'/': ConfigBase.base_config
 		})
 

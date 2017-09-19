@@ -1,4 +1,5 @@
 import cherrypy
+from .config.api import ConfigApi
 from .core.route_url import RouteUrl
 from .core.execute_api_class import ExecuteApiClass
 
@@ -7,20 +8,21 @@ class ApiUrl(ExecuteApiClass):
 	def __init__(self):
 		super(ApiUrl, self).__init__()
 
-		RouteUrl('/', 'Root', 'ALL', 'index')
-		RouteUrl('/accesssecretkey/', 'AccessSecretkey')
-		RouteUrl('/auth/', 'Auth')
-		RouteUrl('/auth/:token', 'Auth', 'GET', 'token')
-		RouteUrl('/apisaction/', 'ApisAction')
-		RouteUrl('/permission/', 'Permission')
-		RouteUrl('/permission/:id_permission_object', 'Permission')
-		RouteUrl('/permissionobject/', 'PermissionObject')
-		RouteUrl('/permissionobject/:id_permission_object', 'PermissionObject')
-		RouteUrl('/permissionsystem/', 'PermissionSystem')
-		RouteUrl('/permissionsystemfeature/', 'PermissionSystemFeature')
-		RouteUrl('/permissionwebuser/', 'PermissionWebuser')
-		RouteUrl('/webuser/', 'Webuser')
-		RouteUrl('/webuserstatistic/:type/:period_start/:period_end', 'WebuserStatistic')
+		if 'request.dispatch' in ConfigApi.base_config:
+			RouteUrl('/', 'Root', 'ALL', 'index')
+			RouteUrl('/accesssecretkey/', 'AccessSecretkey')
+			RouteUrl('/auth/', 'Auth')
+			RouteUrl('/auth/:token', 'Auth', 'GET', 'token')
+			RouteUrl('/apisaction/', 'ApisAction')
+			RouteUrl('/permission/', 'Permission')
+			RouteUrl('/permission/:id_permission_object', 'Permission')
+			RouteUrl('/permissionobject/', 'PermissionObject')
+			RouteUrl('/permissionobject/:id_permission_object', 'PermissionObject')
+			RouteUrl('/permissionsystem/', 'PermissionSystem')
+			RouteUrl('/permissionsystemfeature/', 'PermissionSystemFeature')
+			RouteUrl('/permissionwebuser/', 'PermissionWebuser')
+			RouteUrl('/webuser/', 'Webuser')
+			RouteUrl('/webuserstatistic/:type/:period_start/:period_end', 'WebuserStatistic')
 
 	@cherrypy.expose
 	def index(self, *args, **kwargs):

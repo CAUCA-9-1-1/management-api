@@ -41,4 +41,4 @@ class ConfigPage(ConfigBase):
 		if os.path.exists("%s/app/%s.py" % (config.ROOT, 'ajax')):
 			self.add_page('Ajax')
 
-		ConfigBase.complete(self)
+		ConfigBase.complete()
