@@ -36,7 +36,6 @@ class ExecuteApiClass(LoadClass):
 			})
 
 		try:
-
 			return self.encode(self.exec_method(name, args))
 		except Exception as e:
 			return_json_error(e)

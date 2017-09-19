@@ -22,6 +22,7 @@ class ApiUrl(ExecuteApiClass):
 			RouteUrl('/permissionsystemfeature/', 'PermissionSystemFeature')
 			RouteUrl('/permissionwebuser/', 'PermissionWebuser')
 			RouteUrl('/webuser/', 'Webuser')
+			RouteUrl('/webuser/:id_webuser', 'Webuser')
 			RouteUrl('/webuserstatistic/:type/:period_start/:period_end', 'WebuserStatistic')
 
 	@cherrypy.expose
