@@ -94,15 +94,19 @@ class ExecuteApiClass(LoadClass):
 			return {}
 
 	def get_ask_parameters(self, kwargs, args):
+		nb_params = 0
 		arguments = {}
 
 		if args:
 			for key in args.parameters:
-				if key is not 'self':
+				if key is not "self":
 					if key in kwargs:
 						arguments[key] = self.convert_argument(kwargs[key])
-					elif key in kwargs['body']:
-						arguments[key] = self.convert_argument(kwargs['body'][key])
+					elif key in kwargs["body"]:
+						arguments[key] = self.convert_argument(kwargs["body"][key])
+					elif "path" in kwargs and len(kwargs["path"]) > nb_params:
+						arguments[key] = kwargs["path"][nb_params]
+						nb_params += 1
 					else:
 						arguments[key] = None
 
