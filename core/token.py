@@ -2,7 +2,7 @@ import datetime
 import hashlib
 import random
 import uuid
-
+import logging
 import cherrypy
 
 from .database import Database
@@ -70,6 +70,7 @@ class Token:
 			data = db.query(AccessSecretkey).filter(AccessSecretkey.secretkey == key).first()
 
 		if data is None:
+			logging.info("This 'Access Secretkey' is not valid : '%s'" % key)
 			return False
 
 		return True if data.is_active is True else False
