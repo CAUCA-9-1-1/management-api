@@ -14,14 +14,14 @@ class PermissionSystem(Base):
 		'PATCH': '',
 	}
 
-	def create(self, args):
-		if 'description' not in args:
+	def create(self, body):
+		if 'description' not in body:
 			raise Exception("You need to pass a 'description'")
 
 		id_permission_system = uuid.uuid4()
 
 		with Database() as db:
-			db.insert(Table(id_permission_system, args['description']))
+			db.insert(Table(id_permission_system, body['description']))
 			db.commit()
 
 		return {

@@ -43,18 +43,18 @@ class PermissionObject(Base):
 			'data': data
 		}
 
-	def create(self, args):
-		if 'object_table' not in args or 'generic_id' not in args:
+	def create(self, body):
+		if 'object_table' not in body or 'generic_id' not in body:
 			raise Exception("You need to pass a 'object_table' and 'generic_id'")
 
 		id_permission_object = uuid.uuid4()
-		is_group = args['is_group'] if 'is_group' in args else False
-		group_name = args['group_name'] if 'group_name' in args else ''
+		is_group = body['is_group'] if 'is_group' in body else False
+		group_name = body['group_name'] if 'group_name' in body else ''
 
 		with Database() as db:
 			db.insert(Table(
 				id_permission_object, None, config.PERMISSION['systemID'],
-				args['object_table'], args['generic_id'], is_group, group_name
+				body['object_table'], body['generic_id'], is_group, group_name
 			))
 			db.commit()
 
@@ -63,17 +63,17 @@ class PermissionObject(Base):
 			'message': 'permission object successfully created'
 		}
 
-	def save(self, args):
-		if 'id_permission' not in args or args['id_permission'] is None:
-			if 'id_permission_system_feature' not in args:
-				args['id_permission_system_feature'] = self.create_permission_system_feature(args['description'], args['default_value'])
+	def save(self, body):
+		if 'id_permission' not in body or body['id_permission'] is None:
+			if 'id_permission_system_feature' not in body:
+				body['id_permission_system_feature'] = self.create_permission_system_feature(body['description'], body['default_value'])
 
-			if 'id_permission_object' not in args or args['id_permission_object'] is None:
-				args['id_permission_object'] = self.get_id_permission_object(args['object_table'], args['generic_id'])
+			if 'id_permission_object' not in body or body['id_permission_object'] is None:
+				body['id_permission_object'] = self.get_id_permission_object(body['object_table'], body['generic_id'])
 
-			self.create_permission(args['id_permission_object'], args['id_permission_system_feature'], args['access'])
+			self.create_permission(body['id_permission_object'], body['id_permission_system_feature'], body['access'])
 		else:
-			self.modify_permission(args['id_permission'], args['access'])
+			self.modify_permission(body['id_permission'], body['access'])
 
 		return {
 			'message': 'permission successfully save'

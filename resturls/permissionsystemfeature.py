@@ -31,8 +31,8 @@ class PermissionSystemFeature(Base):
 			'data': data
 		}
 
-	def create(self, args):
-		if 'feature_name' not in args or 'description' not in args or 'default_value' not in args:
+	def create(self, body):
+		if 'feature_name' not in body or 'description' not in body or 'default_value' not in body:
 			raise Exception("You need to pass a 'feature_name', 'description' and 'default_value'")
 
 		id_permission_system_feature = uuid.uuid4()
@@ -40,7 +40,7 @@ class PermissionSystemFeature(Base):
 		with Database() as db:
 			db.insert(Table(
 				id_permission_system_feature, config.PERMISSION['systemID'],
-				args['feature_name'], args['description'], args['default_value']
+				body['feature_name'], body['description'], body['default_value']
 			))
 			db.commit()
 
@@ -49,17 +49,17 @@ class PermissionSystemFeature(Base):
 			'message': 'permission system feature successfully created'
 		}
 
-	def modify(self, args):
-		if 'id_permission_system_feature' not in args:
+	def modify(self, body):
+		if 'id_permission_system_feature' not in body:
 			raise Exception("You need to pass a 'id_permission_system_feature'")
 
 		with Database() as db:
-			data = db.query(Table).get(args['id_permission_system_feature'])
+			data = db.query(Table).get(body['id_permission_system_feature'])
 
-			if 'default_value' in args:
-				data.default_value = args['default_value']
-			if 'description' in args:
-				data.description = args['description']
+			if 'default_value' in body:
+				data.default_value = body['default_value']
+			if 'description' in body:
+				data.description = body['description']
 
 			db.commit()
 
