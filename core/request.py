@@ -12,7 +12,7 @@ class Request:
 		self.method = method
 
 	def send(self, data, url=None, headers=None):
-		html = ''
+		html = '{}'
 
 		if url is not None:
 			self.url = url

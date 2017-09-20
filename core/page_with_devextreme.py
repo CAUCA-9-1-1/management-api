@@ -23,9 +23,6 @@ class PageWithDevextreme:
 		if config.CONTENT_SECURITY_POLICY_CONNECT:
 			connect_src.append(config.CONTENT_SECURITY_POLICY_CONNECT)
 
-		if config.WEBSERVICE is not None:
-			connect_src.append(config.WEBSERVICE['host'])
-
 		self.html += '<!DOCTYPE html>'
 		self.html += '<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">'
 
@@ -103,7 +100,6 @@ class PageWithDevextreme:
 
 	def add_config(self):
 		access = []
-		version = 'DEV' if config.PACKAGE_VERSION == '__package_version__' else config.PACKAGE_VERSION
 
 		if config.WEBSERVICE is not None and Session.get('access_token') is not None:
 			config.WEBSERVICE.update({
