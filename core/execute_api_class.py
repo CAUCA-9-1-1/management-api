@@ -116,10 +116,13 @@ class ExecuteApiClass(LoadClass):
 
 	def get_argument(self, args, kwargs):
 		arguments = kwargs
-		arguments['body'] = self.get_body()
+		arguments["body"] = self.get_body()
+
+		if arguments["body"] == {}:
+			arguments["body"] = kwargs
 
 		if args is not ():
-			arguments['path'] = args
+			arguments["path"] = args
 
 		return arguments
 
