@@ -18,7 +18,7 @@ class Base:
 		'PATCH': '',
 	}
 
-	def every_execution(self, class_name, method, *args):
+	def every_execution(self, class_name, method, args):
 		if self.table_name == '':
 			return
 
@@ -26,8 +26,11 @@ class Base:
 		object_id = None
 
 		if len(args) > 0:
-			if field_id in args[0]:
-				object_id = args[0][field_id]
+			if "body" in args:
+				if field_id in args["body"]:
+					object_id = args["body"][field_id]
+			elif field_id in args:
+				object_id = args[field_id]
 
 		with Database() as db:
 			db.insert(Table(Base.logged_id_webuser, method, json.dumps(args), class_name, object_id))

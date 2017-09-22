@@ -1,3 +1,4 @@
+import copy
 import inspect
 from ..config import setup as config
 from .token import Token
@@ -23,8 +24,8 @@ class ExecuteApiClass(LoadClass):
 			raise Exception("We can't find the method '%s' on class '%s'" % (cherrypy.request.method, name))
 
 		execute = getattr(class_object, 'every_execution', None)
-		execute(class_object(), name, cherrypy.request.method, *args)
 		args = self.get_ask_parameters(args, inspect.signature(api_method))
+		execute(class_object(), name, cherrypy.request.method, args)
 
 		return api_method(class_object(), **args)
 
@@ -115,12 +116,17 @@ class ExecuteApiClass(LoadClass):
 		return arguments
 
 	def get_argument(self, args, kwargs):
-		arguments = kwargs
+		arguments = copy.deepcopy(kwargs)
 		arguments["body"] = self.get_body()
 
 		if arguments["body"] == {}:
-			arguments["body"] = kwargs
+			for key in kwargs:
+				try:
+					kwargs[key] = json.loads(kwargs[key])
+				except:
+					pass
 
+			arguments["body"] = kwargs
 		if args is not ():
 			arguments["path"] = args
 

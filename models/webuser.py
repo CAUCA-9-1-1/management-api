@@ -1,4 +1,5 @@
 import json
+import logging
 from datetime import datetime
 from sqlalchemy import Column, Boolean, DateTime, String
 from sqlalchemy.ext.declarative import declarative_base
@@ -59,7 +60,9 @@ class Webuser(Base):
 
 	def set_attributes(self, id_webuser, attributes):
 		with Database() as db:
+			print(attributes)
 			for name in attributes:
+				print(name)
 				if isinstance(attributes[name], list):
 					attributes[name] = json.dumps(attributes[name])
 
