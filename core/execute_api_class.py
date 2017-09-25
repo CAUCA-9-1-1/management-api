@@ -120,13 +120,13 @@ class ExecuteApiClass(LoadClass):
 		arguments["body"] = self.get_body()
 
 		if arguments["body"] == {}:
-			for key in kwargs:
+			for key in arguments:
 				try:
-					kwargs[key] = json.loads(kwargs[key])
+					arguments[key] = json.loads(arguments[key])
 				except:
 					pass
 
-			arguments["body"] = kwargs
+			arguments["body"] = arguments
 		if args is not ():
 			arguments["path"] = args
 
