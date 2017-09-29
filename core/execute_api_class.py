@@ -14,7 +14,7 @@ class ExecuteApiClass(LoadClass):
 	def exec_method(self, name, args):
 		class_object = self.load_class(name)
 
-		if not self.has_access(class_object):
+		if name not in ["Root"] and not self.has_access(class_object):
 			raise AuthentificationException()
 
 		method_name = self.has_method(class_object)
