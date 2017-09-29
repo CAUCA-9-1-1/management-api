@@ -14,7 +14,7 @@ class ExecuteApiClass(LoadClass):
 	def exec_method(self, name, args):
 		class_object = self.load_class(name)
 
-		if name not in ["Root"] and not self.has_access(class_object):
+		if not self.has_access(class_object):
 			raise AuthentificationException()
 
 		method_name = self.has_method(class_object)
@@ -76,8 +76,8 @@ class ExecuteApiClass(LoadClass):
 			class_name = ''
 
 		if Token().valid_access_from_header() is True or (
-			class_name == 'AccessSecretkey' and cherrypy.request.method == 'POST'
-		):
+			class_name == "AccessSecretkey" and cherrypy.request.method == "POST"
+		) or (class_name == "Root"):
 			return True
 
 		return False
@@ -117,16 +117,16 @@ class ExecuteApiClass(LoadClass):
 
 	def get_argument(self, args, kwargs):
 		arguments = copy.deepcopy(kwargs)
-		arguments["body"] = self.get_body()
+		body = self.get_body()
 
-		if arguments["body"] == {}:
+		if body == {}:
 			for key in arguments:
 				try:
-					arguments[key] = json.loads(arguments[key])
+					body[key] = json.loads(arguments[key])
 				except:
-					pass
+					body[key] = arguments[key]
 
-			arguments["body"] = arguments
+			arguments["body"] = body
 		if args is not ():
 			arguments["path"] = args
 
