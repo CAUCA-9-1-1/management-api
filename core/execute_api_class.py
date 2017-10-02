@@ -123,6 +123,7 @@ class ExecuteApiClass(LoadClass):
 			for key in arguments:
 				try:
 					body[key] = json.loads(arguments[key])
+					arguments[key] = json.loads(arguments[key])
 				except:
 					body[key] = arguments[key]
 
