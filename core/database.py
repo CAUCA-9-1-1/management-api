@@ -92,6 +92,9 @@ class Database:
 		return True
 
 	def keys_of_cursor(self, cursor):
+		if cursor._result is None:
+			return list()
+
 		keys = list()
 		fields = cursor._result.fields
 
