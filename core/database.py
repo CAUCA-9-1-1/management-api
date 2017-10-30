@@ -1,3 +1,4 @@
+import logging
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.orm import sessionmaker
 from ..config import setup as config
@@ -92,14 +93,19 @@ class Database:
 		return True
 
 	def keys_of_cursor(self, cursor):
-		if cursor._result is None:
-			return list()
-
 		keys = list()
-		fields = cursor._result.fields
 
-		for field in fields:
-			keys.append(field.name)
+		# If we use python3-mysqldb
+		if cursor.description is not None:
+			for field in cursor.description:
+				keys.append(field[0])
+
+		# If we use python3-pymysql
+		if cursor._result is not None:
+			fields = cursor._result.fields
+
+			for field in fields:
+				keys.append(field.name)
 
 		return keys
 
