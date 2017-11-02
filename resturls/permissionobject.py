@@ -90,3 +90,14 @@ class PermissionObject(Base):
 				return object.id_permission_object
 
 		return None
+
+	def get_id_permission_object_parent(self, id_permission_object):
+		with Database() as db:
+			object = db.query(Table).filter(
+				Table.id_permission_object == id_permission_object
+			).first()
+
+			if object is not None:
+				return object.id_permission_object_parent
+
+		return None

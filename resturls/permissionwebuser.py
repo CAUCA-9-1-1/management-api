@@ -24,4 +24,9 @@ class PermissionWebuser(Base):
 
 			id_permission_object = permission_object['id_permission_object']
 
-		return Permission().get(id_permission_object)
+		id_permission_object_parent = PermissionObject().get_id_permission_object_parent(id_permission_object)
+
+		webuser_permission = Permission().get(id_permission_object)
+		parent_permission = Permission().get(id_permission_object_parent)
+		
+		return webuser_permission if parent_permission else {**webuser_permission, **parent_permission}
