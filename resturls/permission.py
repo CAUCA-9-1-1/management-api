@@ -12,7 +12,7 @@ class Permission(Base):
 		'GET': 'get',
 		'PUT': 'modify',
 		'POST': 'create',
-		'DELETE': '',
+		'DELETE': 'remove',
 		'PATCH': '',
 	}
 
@@ -75,4 +75,13 @@ class Permission(Base):
 
 		return {
 			'message': 'permission successfully modified'
+		}
+
+	def remove(self, id_permission):
+		with Database() as db:
+			db.query(Table).filter(Table.id_permission == id_permission).delete()
+			db.commit()
+
+		return {
+			'message': 'webuser successfully removed'
 		}

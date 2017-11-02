@@ -9,7 +9,7 @@ class PermissionObject(Base):
 	table_name = 'tbl_permission_object'
 	mapping_method = {
 		'GET': 'get',
-		'PUT': '',
+		'PUT': 'create',
 		'POST': 'save',
 		'DELETE': '',
 		'PATCH': '',
