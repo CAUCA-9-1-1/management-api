@@ -10,8 +10,8 @@ class PermissionObject(Base):
 	mapping_method = {
 		'GET': 'get',
 		'PUT': 'create',
-		'POST': 'save',
-		'DELETE': '',
+		'POST': 'modify',
+		'DELETE': 'remove',
 		'PATCH': '',
 	}
 
@@ -48,12 +48,13 @@ class PermissionObject(Base):
 			raise Exception("You need to pass a 'object_table' and 'generic_id'")
 
 		id_permission_object = uuid.uuid4()
+		id_permission_object_parent = body['id_permission_object_parent'] if 'id_permission_object_parent' in body else None
 		is_group = body['is_group'] if 'is_group' in body else False
 		group_name = body['group_name'] if 'group_name' in body else ''
 
 		with Database() as db:
 			db.insert(Table(
-				id_permission_object, None, config.PERMISSION['systemID'],
+				id_permission_object, id_permission_object_parent, config.PERMISSION['systemID'],
 				body['object_table'], body['generic_id'], is_group, group_name
 			))
 			db.commit()
@@ -63,20 +64,37 @@ class PermissionObject(Base):
 			'message': 'permission object successfully created'
 		}
 
-	def save(self, body):
-		if 'id_permission' not in body or body['id_permission'] is None:
-			if 'id_permission_system_feature' not in body:
-				body['id_permission_system_feature'] = self.create_permission_system_feature(body['description'], body['default_value'])
+	def modify(self, body):
+		if 'id_permission_object' not in body:
+			raise Exception("You need to pass a 'id_permission_object'")
 
-			if 'id_permission_object' not in body or body['id_permission_object'] is None:
-				body['id_permission_object'] = self.get_id_permission_object(body['object_table'], body['generic_id'])
+		with Database() as db:
+			data = db.query(Table).get(body['id_permission_object'])
 
-			self.create_permission(body['id_permission_object'], body['id_permission_system_feature'], body['access'])
-		else:
-			self.modify_permission(body['id_permission'], body['access'])
+			if 'id_permission_object_parent' in body:
+				data.id_permission_object_parent = body['id_permission_object_parent']
+			if 'object_table' in body:
+				data.object_table = body['object_table']
+			if 'generic_id' in body:
+				data.generic_id = body['generic_id']
+			if 'is_group' in body:
+				data.is_group = body['is_group']
+			if 'group_name' in body:
+				data.group_name = body['group_name']
+
+			db.commit()
 
 		return {
-			'message': 'permission successfully save'
+			'message': 'permission object successfully modified'
+		}
+
+	def remove(self, id_permission_object):
+		with Database() as db:
+			db.query(Table).filter(Table.id_permission_object == id_permission_object).delete()
+			db.commit()
+
+		return {
+			'message': 'permission object successfully removed'
 		}
 
 	def get_id_permission_object(self, object_table, generic_id):
