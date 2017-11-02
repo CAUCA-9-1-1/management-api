@@ -24,9 +24,25 @@ class PermissionWebuser(Base):
 
 			id_permission_object = permission_object['id_permission_object']
 
+		return self.loop_for_parent_permission(Permission().get(id_permission_object), id_permission_object)
+
+	def loop_for_parent_permission(self, permission_object, id_permission_object):
 		id_permission_object_parent = PermissionObject().get_id_permission_object_parent(id_permission_object)
 
-		webuser_permission = Permission().get(id_permission_object)
-		parent_permission = Permission().get(id_permission_object_parent)
-		
-		return webuser_permission if parent_permission else {**webuser_permission, **parent_permission}
+		if id_permission_object_parent is None:
+			return permission_object
+
+		permission_object_parent = Permission().get(id_permission_object_parent)
+
+		for permission in permission_object["data"]:
+			if permission.access is not True:
+				parent = self.get_permission_of_parent(permission_object_parent, permission.feature_name)
+				permission.access = parent.access
+				permission.id_permission = parent.id_permission
+
+		return self.loop_for_parent_permission(permission_object, id_permission_object_parent)
+
+	def get_permission_of_parent(self, permission_object, feature_name):
+		for permission in permission_object["data"]:
+			if permission.feature_name == feature_name:
+				return permission
