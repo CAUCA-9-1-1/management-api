@@ -30,7 +30,7 @@ class PermissionWebuser(Base):
 		id_permission_object_parent = PermissionObject().get_id_permission_object_parent(id_permission_object)
 
 		if id_permission_object_parent is None:
-			return permission_object
+			return self.set_default_value_as_access(permission_object)
 
 		permission_object_parent = Permission().get(id_permission_object_parent)
 
@@ -46,3 +46,10 @@ class PermissionWebuser(Base):
 		for permission in permission_object["data"]:
 			if permission.feature_name == feature_name:
 				return permission
+
+	def set_default_value_as_access(self, permission_object):
+		for permission in permission_object["data"]:
+			if permission.access is None:
+				permission.access = permission.default_value
+
+		return permission_object
