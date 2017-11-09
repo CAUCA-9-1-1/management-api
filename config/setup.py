@@ -1,5 +1,27 @@
 import os
+import json
 import uuid
+
+
+def override_each_json_config(existing_config, filename):
+	with open(filename) as file:
+		configs = json.load(file)
+
+		for key in configs:
+			existing_config[key] = configs[key]
+
+def validate_minimal_config():
+	if PACKAGE_NAME is None:
+		raise Exception("You need to set 'PACKAGE_NAME' inside your config file")
+
+	if PERMISSION is None:
+		system_id = str(uuid.uuid4())
+
+		raise Exception("""
+			You need to set the permission systemID.
+			Place PERMISSION = {'systemID': '%s'} in your config file
+			And execute the request "INSERT INTO tbl_permission_system VALUES('%s', '%s');" on your database
+		""" % (system_id, system_id, PACKAGE_NAME))
 
 
 # Database config
@@ -62,20 +84,10 @@ ROOT = os.path.abspath(os.getcwd())
 WEBROOT = '/'
 SEARCH_FOLDERS = ['app', 'cause.api.management']
 
-""" Override all default config with the user config
-"""
-if os.path.isfile("config.py"):
+if os.path.isfile("config.json"):
+	override_each_json_config(locals(), "config.json")
+elif os.path.isfile("config.py"):
 	with open("config.py") as file:
 		exec(file.read())
 
-if PACKAGE_NAME is None:
-	raise Exception("You need to set 'PACKAGE_NAME' inside your config file")
-
-if PERMISSION is None:
-	system_id = str(uuid.uuid4())
-
-	raise Exception("""
-		You need to set the permission systemID.
-		Place PERMISSION = {'systemID': '%s'} in your config file
-		And execute the request "INSERT INTO tbl_permission_system VALUES('%s', '%s');" on your database
-	""" % (system_id, system_id, PACKAGE_NAME))
+validate_minimal_config()
