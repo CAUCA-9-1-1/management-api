@@ -18,7 +18,7 @@ class PageWithDevextreme:
 	def __init__(self):
 		""" Place the HTML5 doctype
 		"""
-		connect_src = [config.CAUSEJS]
+		connect_src = []
 
 		if config.CONTENT_SECURITY_POLICY_CONNECT:
 			connect_src.append(config.CONTENT_SECURITY_POLICY_CONNECT)
@@ -27,14 +27,13 @@ class PageWithDevextreme:
 		self.html += '<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">'
 
 		self.to_head("""<meta http-equiv="Content-Security-Policy" content="
-						default-src 'self' %s;
-						style-src 'self' %s 'unsafe-inline';
-						script-src 'self' %s 'unsafe-inline' 'unsafe-eval';
+						default-src 'self';
+						style-src 'self' 'unsafe-inline';
+						script-src 'self' 'unsafe-inline' 'unsafe-eval';
 						connect-src 'self' %s;
-						img-src 'self' %s data:;
-					"/>""" % (
-			config.CAUSEJS, config.CAUSEJS, config.CAUSEJS, " ".join(connect_src), config.CAUSEJS
-		))
+						img-src 'self' data:;
+					"/>""" % (" ".join(connect_src))
+		)
 
 	def show(self):
 		""" Return the complete page
@@ -86,16 +85,8 @@ class PageWithDevextreme:
 		self.body += tag
 
 	def add_cause(self):
-		folder = '//%s/' % config.CAUSEJS
-		if config.MINIMIZE_JS is False:
-			folder = '/causeJs/'
-
-		if config.MINIMIZE_JS is True:
-			self.js([folder + 'cause/js/cause%s.js' % ("" if config.IS_DEV else ".min")])
-		else:
-			self.js(['/js/'])
-
-		self.to_head('<link rel="icon" href="' + folder + 'cause/images/favicon.png">')
+		self.js(['/causestatic/js/cause%s.js' % ("" if config.IS_DEV else ".min")])
+		self.to_head('<link rel="icon" href="/causestatic/images/favicon.png">')
 		self.add_config()
 
 	def add_config(self):
@@ -136,85 +127,6 @@ class PageWithDevextreme:
 				'webroot': config.WEBROOT
 			}))
 		)
-
-	def add_dev_extreme(self):
-		folder = '//%s/' % config.CAUSEJS
-		if config.MINIMIZE_JS is False:
-			folder = '/causeJs/'
-
-		self.to_head('<link rel="dx-template" type="text/html" href="' + folder + 'cause/plugins/devExtreme/' + config.VERSION['devExtreme'] + '/layouts/Simple/SimpleLayout.html"/>')
-		self.to_head('<link rel="dx-template" type="text/html" href="' + folder + 'cause/plugins/devExtreme/' + config.VERSION['devExtreme'] + '/layouts/Popup/PopupLayout.html"/>')
-		self.to_head('<link rel="dx-template" type="text/html" href="' + folder + 'cause/plugins/devExtreme/' + config.VERSION['devExtreme'] + '/layouts/SlideOut/SlideOutLayout.html"/>')
-		self.css([
-				folder + 'cause/plugins/devExtreme/' + config.VERSION['devExtreme'] + '/css/dx.common.css',
-				folder + 'cause/plugins/devExtreme/' + config.VERSION['devExtreme'] + '/css/dx.spa.css',
-				folder + 'cause/plugins/devExtreme/' + config.VERSION['devExtreme'] + '/layouts/Simple/SimpleLayout.css',
-				folder + 'cause/plugins/devExtreme/' + config.VERSION['devExtreme'] + '/layouts/Popup/PopupLayout.css',
-				folder + 'cause/plugins/devExtreme/' + config.VERSION['devExtreme'] + '/layouts/SlideOut/SlideOutLayout.css',
-				folder + 'cause/plugins/devExtreme/' + config.VERSION['devExtreme'] + '/layouts/Desktop/DesktopLayout.css',
-				{'rel': 'dx-theme', 'data-theme': 'generic.light', 'href': folder + 'cause/css/generic.light.custom-%s.css' % config.VERSION['devExtreme']}])
-
-		if config.VERSION['devExtreme'] == '16.2.4' or config.VERSION['devExtreme'] == '16.2.6':
-			self.includeDevExtreme16_2(folder)
-		elif config.VERSION['devExtreme'] == '16.1.7' or config.VERSION['devExtreme'] == '16.1.8':
-			self.includeDevExtreme16_1(folder)
-		else:
-			self.includeDevExtreme15(folder)
-
-	def includeDevExtreme16_2(self, folder):
-		self.to_head('<link rel="dx-template" type="text/html" href="' + folder + 'cause/layouts/DesktopLayout.html"/>')
-		self.js([
-			folder + 'cause/plugins/devExtreme/' + config.VERSION['devExtreme'] + '/js/jquery-' + config.VERSION['jQuery'] + '.min.js',
-			folder + 'cause/plugins/devExtreme/' + config.VERSION['devExtreme'] + '/js/knockout-3.4.0.js',
-			folder + 'cause/plugins/devExtreme/' + config.VERSION['devExtreme'] + '/js/jszip.min.js',
-			folder + 'cause/plugins/devExtreme/' + config.VERSION['devExtreme'] + '/js/cldr.min.js',
-			folder + 'cause/plugins/devExtreme/' + config.VERSION['devExtreme'] + '/js/cldr/event.min.js',
-			folder + 'cause/plugins/devExtreme/' + config.VERSION['devExtreme'] + '/js/cldr/supplemental.min.js',
-			folder + 'cause/plugins/devExtreme/' + config.VERSION['devExtreme'] + '/js/globalize.min.js',
-			folder + 'cause/plugins/devExtreme/' + config.VERSION['devExtreme'] + '/js/globalize/message.min.js',
-			folder + 'cause/plugins/devExtreme/' + config.VERSION['devExtreme'] + '/js/globalize/number.min.js',
-			folder + 'cause/plugins/devExtreme/' + config.VERSION['devExtreme'] + '/js/globalize/date.min.js',
-			folder + 'cause/plugins/devExtreme/' + config.VERSION['devExtreme'] + '/js/globalize/currency.min.js',
-			folder + 'cause/plugins/devExtreme/' + config.VERSION['devExtreme'] + '/js/dx.messages.js',
-			folder + 'cause/plugins/devExtreme/' + config.VERSION['devExtreme'] + '/js/localization/dx.web.fr.js',
-			folder + 'cause/plugins/devExtreme/' + config.VERSION['devExtreme'] + '/layouts/Simple/SimpleLayout.js',
-			folder + 'cause/plugins/devExtreme/' + config.VERSION['devExtreme'] + '/layouts/Popup/PopupLayout.js',
-			folder + 'cause/plugins/devExtreme/' + config.VERSION['devExtreme'] + '/layouts/SlideOut/SlideOutLayout.js',
-			folder + 'cause/plugins/devExtreme/' + config.VERSION['devExtreme'] + '/layouts/Desktop/DesktopLayout.js'])
-
-	def includeDevExtreme16_1(self, folder):
-		self.to_head('<link rel="dx-template" type="text/html" href="' + folder + 'cause/layouts/DesktopLayout.html"/>')
-		self.js([
-			folder + 'cause/plugins/devExtreme/' + config.VERSION['devExtreme'] + '/js/jquery-2.2.3.min.js',
-			folder + 'cause/plugins/devExtreme/' + config.VERSION['devExtreme'] + '/js/knockout-3.4.0.js',
-			folder + 'cause/plugins/devExtreme/' + config.VERSION['devExtreme'] + '/js/jszip.min.js',
-			folder + 'cause/plugins/devExtreme/' + config.VERSION['devExtreme'] + '/js/cldr.min.js',
-			folder + 'cause/plugins/devExtreme/' + config.VERSION['devExtreme'] + '/js/cldr/event.min.js',
-			folder + 'cause/plugins/devExtreme/' + config.VERSION['devExtreme'] + '/js/cldr/supplemental.min.js',
-			folder + 'cause/plugins/devExtreme/' + config.VERSION['devExtreme'] + '/js/globalize.min.js',
-			folder + 'cause/plugins/devExtreme/' + config.VERSION['devExtreme'] + '/js/globalize/message.min.js',
-			folder + 'cause/plugins/devExtreme/' + config.VERSION['devExtreme'] + '/js/globalize/number.min.js',
-			folder + 'cause/plugins/devExtreme/' + config.VERSION['devExtreme'] + '/js/globalize/date.min.js',
-			folder + 'cause/plugins/devExtreme/' + config.VERSION['devExtreme'] + '/js/globalize/currency.min.js',
-			folder + 'cause/plugins/devExtreme/' + config.VERSION['devExtreme'] + '/js/dx.all.js',
-			folder + 'cause/plugins/devExtreme/' + config.VERSION['devExtreme'] + '/js/localization/dx.all.fr.js',
-			folder + 'cause/plugins/devExtreme/' + config.VERSION['devExtreme'] + '/layouts/Simple/SimpleLayout.js',
-			folder + 'cause/plugins/devExtreme/' + config.VERSION['devExtreme'] + '/layouts/Popup/PopupLayout.js',
-			folder + 'cause/plugins/devExtreme/' + config.VERSION['devExtreme'] + '/layouts/SlideOut/SlideOutLayout.js',
-			folder + 'cause/plugins/devExtreme/' + config.VERSION['devExtreme'] + '/layouts/Desktop/DesktopLayout.js'])
-
-	def includeDevExtreme15(self, folder):
-		self.to_head('<link rel="dx-template" type="text/html" href="' + folder + 'cause/layouts/DesktopLayout.html"/>')
-		self.js([
-			folder + 'cause/plugins/devExtreme/' + config.VERSION['devExtreme'] + '/js/jquery-2.1.4.min.js',
-			folder + 'cause/plugins/devExtreme/' + config.VERSION['devExtreme'] + '/js/knockout-3.4.0.js',
-			folder + 'cause/plugins/devExtreme/' + config.VERSION['devExtreme'] + '/js/globalize.js',
-			folder + 'cause/plugins/devExtreme/' + config.VERSION['devExtreme'] + '/js/dx.all.js',
-			folder + 'cause/plugins/devExtreme/' + config.VERSION['devExtreme'] + '/js/localization/dx.all.fr.js',
-			folder + 'cause/plugins/devExtreme/' + config.VERSION['devExtreme'] + '/layouts/Simple/SimpleLayout.js',
-			folder + 'cause/plugins/devExtreme/' + config.VERSION['devExtreme'] + '/layouts/Popup/PopupLayout.js',
-			folder + 'cause/plugins/devExtreme/' + config.VERSION['devExtreme'] + '/layouts/SlideOut/SlideOutLayout.js',
-			folder + 'cause/plugins/devExtreme/' + config.VERSION['devExtreme'] + '/layouts/Desktop/DesktopLayout.js'])
 
 if __name__ == '__main__':
 	PageWithDevextreme()

@@ -72,7 +72,6 @@ PORT = 8080
 SESSION_TIMEOUT = 30
 
 # Page web
-CAUSEJS = "st.cauca.ca"
 CONTENT_SECURITY_POLICY_CONNECT = None
 VERSION = {
 	'devExtreme': '16.2.6',

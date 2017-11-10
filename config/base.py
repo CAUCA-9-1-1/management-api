@@ -23,10 +23,6 @@ class ConfigBase:
 			'tools.staticdir.root': os.path.abspath(os.getcwd()),
 			'log.screen': config.IS_DEV,
 		}
-		ConfigBase.static_config = {
-			'tools.staticdir.on': True,
-			'tools.staticdir.dir': 'static'
-		}
 
 		ConfigBase.create_basic_folder()
 		ConfigBase.check_uwsgi()
