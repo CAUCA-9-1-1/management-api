@@ -15,23 +15,6 @@ class ConfigPage(ConfigBase):
 				}
 			})
 
-		self.use_local_staticwebcontent()
-
-	def use_local_staticwebcontent(self):
-		if os.path.exists("%s/cause/staticweb" % config.ROOT):
-			self.add_config({
-				'/causestatic': {
-					'tools.staticdir.on': True,
-					'tools.staticdir.dir': 'cause/staticweb'
-				}
-			})
-			self.add_config({
-				'/plugins': {
-					'tools.staticdir.on': True,
-					'tools.staticdir.dir': 'plugins'
-				}
-			})
-
 	def complete(self):
 		if os.path.exists("%s/app/%s.py" % (config.ROOT, 'root')):
 			self.add_page('Root', '/')

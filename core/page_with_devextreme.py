@@ -85,8 +85,8 @@ class PageWithDevextreme:
 		self.body += tag
 
 	def add_cause(self):
-		self.js(['/causestatic/js/cause%s.js' % ("" if config.IS_DEV else ".min")])
-		self.to_head('<link rel="icon" href="/causestatic/images/favicon.png">')
+		self.js(['/static/cause-web-content/js/cause%s.js' % ("" if config.IS_DEV else ".min")])
+		self.to_head('<link rel="icon" href="/static/cause-web-content/images/favicon.png">')
 		self.add_config()
 
 	def add_config(self):
