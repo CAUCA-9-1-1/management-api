@@ -35,7 +35,7 @@ class PermissionWebuser(Base):
 		permission_object_parent = Permission().get(id_permission_object_parent)
 
 		for permission in permission_object["data"]:
-			if permission.access is not True:
+			if permission.access is None:
 				parent = self.get_permission_of_parent(permission_object_parent, permission.feature_name)
 				permission.access = parent.access
 				permission.id_permission = parent.id_permission
