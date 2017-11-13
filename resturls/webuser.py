@@ -92,6 +92,8 @@ class Webuser(Base):
 				data.username = body['username']
 			if 'password' in body:
 				data.password = Encryption.password(body['password'])
+			if 'is_active' in body:
+				data.is_active = body['is_active']
 			if 'attributes' in body:
 				data.set_attributes(body['id_webuser'], body['attributes'])
 
