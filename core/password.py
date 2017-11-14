@@ -16,7 +16,7 @@ class Password:
 		return hash.hexdigest()
 
 	@staticmethod
-	def validate(password):
+	def validate_ascii_character_set(password):
 		pattern = re.compile('^[ -~]{8,64}$')
 
 		if not password:

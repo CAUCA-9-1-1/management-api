@@ -53,7 +53,7 @@ class Webuser(Base):
 
 		if data is None:
 			return False
-		if not Password.validate(password):
+		if not Password.validate_ascii_character_set(password):
 			return False
 		if not Password.compare(password, data.password):
 			return False
@@ -67,8 +67,8 @@ class Webuser(Base):
 
 		if 'username' not in body or 'password' not in body:
 			raise Exception("You need to pass a 'username' and 'password'")
-		if not Password.validate(body['password']):
-			raise Exception("Password is not valid")
+		if not Password.validate_ascii_character_set(body['password']):
+			raise Exception("Password is not in the ASCII character set")
 
 		password = Password.encryption(body['password'])
 
@@ -98,8 +98,8 @@ class Webuser(Base):
 			if 'username' in body:
 				data.username = body['username']
 			if 'password' in body:
-				if not Password.validate(body['password']):
-					raise Exception("Password is not valid")
+				if not Password.validate_ascii_character_set(body['password']):
+					raise Exception("Password is not in the ASCII character set")
 
 				data.password = Password.encryption(body['password'])
 			if 'is_active' in body:
