@@ -21,7 +21,7 @@ class Password:
 
 		if not password:
 			return False
-		if not pattern.match(password):
+		if not pattern.match(str(password)):
 			return False
 
 		return True
