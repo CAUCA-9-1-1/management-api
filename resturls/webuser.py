@@ -48,11 +48,13 @@ class Webuser(Base):
 	def logon(self, username, password):
 		with Database() as db:
 			data = db.query(Table).filter(
-				Table.username == username,
-				Table.password == Encryption.password(password)
+				Table.username == username
 			).first()
 
-		if data is not None:
+		if data is None:
+			return False
+
+		if Encryption.compare_password(password, data.password):
 			Base.logged_id_webuser = data.id_webuser
 			return True
 
