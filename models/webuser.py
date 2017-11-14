@@ -5,7 +5,7 @@ from sqlalchemy import Column, Boolean, DateTime, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.hybrid import hybrid_property
 from ..core.database import Database
-from ..core.encryption import Encryption
+from ..core.password import Password
 from ..core.utilities import Utilities
 
 
@@ -55,7 +55,7 @@ class Webuser(Base):
 	def __init__(self, id_webuser, username, password, is_active):
 		self.id_webuser = id_webuser
 		self.username = username
-		self.password = Encryption.password(password)
+		self.password = Password.password(password)
 		self.is_active = is_active
 
 	def set_attributes(self, id_webuser, attributes):

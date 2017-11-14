@@ -1,7 +1,7 @@
 import uuid
 from .base import Base
 from ..core.database import Database
-from ..core.encryption import Encryption
+from ..core.password import Password
 from ..models.webuser import Webuser as Table
 
 
@@ -53,12 +53,13 @@ class Webuser(Base):
 
 		if data is None:
 			return False
+		if not Password.validate(password):
+			return False
+		if not Password.compare(password, data.password):
+			return False
 
-		if Encryption.compare_password(password, data.password):
-			Base.logged_id_webuser = data.id_webuser
-			return True
-
-		return False
+		Base.logged_id_webuser = data.id_webuser
+		return True
 
 	def create(self, body):
 		id_webuser = uuid.uuid4()
@@ -66,9 +67,13 @@ class Webuser(Base):
 
 		if 'username' not in body or 'password' not in body:
 			raise Exception("You need to pass a 'username' and 'password'")
+		if not Password.validate(body['password']):
+			raise Exception("Password is not valid")
+
+		password = Password.encryption(body['password'])
 
 		with Database() as db:
-			webuser = Table(id_webuser, body['username'], body['password'], is_active)
+			webuser = Table(id_webuser, body['username'], password, is_active)
 			db.insert(webuser)
 			db.commit()
 
@@ -93,7 +98,10 @@ class Webuser(Base):
 			if 'username' in body:
 				data.username = body['username']
 			if 'password' in body:
-				data.password = Encryption.password(body['password'])
+				if not Password.validate(body['password']):
+					raise Exception("Password is not valid")
+
+				data.password = Password.encryption(body['password'])
 			if 'is_active' in body:
 				data.is_active = body['is_active']
 			if 'attributes' in body:
