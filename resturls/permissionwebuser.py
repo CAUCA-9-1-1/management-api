@@ -17,12 +17,7 @@ class PermissionWebuser(Base):
 		id_permission_object = PermissionObject().get_id_permission_object('webuser', id_webuser)
 
 		if id_permission_object is None:
-			permission_object = PermissionObject().create({
-				'object_table': 'webuser',
-				'generic_id': id_webuser
-			})
-
-			id_permission_object = permission_object['id_permission_object']
+			return ()
 
 		return self.loop_for_parent_permission(Permission().get(id_permission_object), id_permission_object)
 
