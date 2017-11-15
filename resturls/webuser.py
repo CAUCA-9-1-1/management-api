@@ -70,10 +70,8 @@ class Webuser(Base):
 		if not Password.validate_ascii_character_set(body['password']):
 			raise Exception("Password is not in the ASCII character set")
 
-		password = Password.encryption(body['password'])
-
 		with Database() as db:
-			webuser = Table(id_webuser, body['username'], password, is_active)
+			webuser = Table(id_webuser, body['username'], Password.encryption(body['password']), is_active)
 			db.insert(webuser)
 			db.commit()
 
