@@ -15,7 +15,7 @@ from ..resturls.webuser import Webuser
 
 
 class Token:
-	def logon(self, username=None, password=None):
+	def logon(self, username=None, password=None, session_id=None):
 		if username is None or Webuser().logon(username, password) is False:
 			raise AuthentificationException("authentification failed")
 
@@ -24,7 +24,7 @@ class Token:
 		refresh_token = self.generate_token()
 
 		with Database() as db:
-			db.insert(AccessToken(id_access_token, Base.logged_id_webuser, access_token, refresh_token, self.expires_in_minutes * 60))
+			db.insert(AccessToken(id_access_token, Base.logged_id_webuser, access_token, refresh_token, self.expires_in_minutes * 60, session_id))
 			db.commit()
 
 		return {

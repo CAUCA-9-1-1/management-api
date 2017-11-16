@@ -62,7 +62,8 @@ class Session:
 		query = Request("%s/auth/" % config.WEBSERVICE['host'], 'PUT')
 		data = json.loads(query.send({
 			'username': username,
-			'password': password
+			'password': password,
+			'session_id': cherrypy.session._id
 		}, None, {
 			'Authorization': 'Key %s' % config.WEBSERVICE['key']
 		}))
