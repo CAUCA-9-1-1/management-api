@@ -1,4 +1,5 @@
 import json
+import logging
 import cherrypy
 from ..config import setup as config
 from .request import Request
@@ -35,6 +36,16 @@ class Session:
 	def is_logged(self):
 		if Session.get('id_webuser') is not None:
 			return True
+
+		return self.reset_session()
+
+	def reset_session(self):
+		query = Request("%s/auth/" % config.WEBSERVICE['host'], 'GET')
+		data = json.loads(query.send({
+			'session_id': cherrypy.session._id
+		}, None, {
+			'Authorization': 'Key %s' % config.WEBSERVICE['key']
+		}))
 
 		return False
 
