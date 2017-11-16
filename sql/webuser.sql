@@ -11,6 +11,11 @@ create table tbl_webuser
 )
 ;
 
+create unique index tbl_webuser_username_uindex
+	on tbl_webuser (username)
+;
+
+
 create table tbl_webuser_attributes
 (
 	id_webuser uuid not null,
