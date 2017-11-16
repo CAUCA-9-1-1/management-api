@@ -23,6 +23,9 @@ def validate_minimal_config():
 			And execute the request "INSERT INTO tbl_permission_system VALUES('%s', '%s');" on your database
 		""" % (system_id, system_id, PACKAGE_NAME))
 
+	if IS_DEV:
+		LOGS['level'] = 'info'
+
 
 # Database config
 DATABASE = None
@@ -73,10 +76,13 @@ SESSION_TIMEOUT = 30
 
 # Page web
 CONTENT_SECURITY_POLICY_CONNECT = None
+VERSION = {}
+"""
 VERSION = {
-	'devExtreme': '16.2.6',
-	'jQuery': '3.1.0'
+	'devExtreme': '17.1.8',
+	'jQuery': '3.2.1'
 }
+"""
 
 # Folder
 ROOT = os.path.abspath(os.getcwd())
