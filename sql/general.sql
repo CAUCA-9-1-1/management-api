@@ -23,7 +23,8 @@ create table tbl_access_token
 	access_token varchar(100),
 	refresh_token varchar(100),
 	created_on timestamp default now(),
-	expires_in integer default 7200
+	expires_in integer default 7200,
+	session_id varchar(40)
 )
 ;
 
