@@ -42,12 +42,13 @@ class Session:
 	def reset_session(self):
 		query = Request("%s/auth/" % config.WEBSERVICE['host'], 'GET')
 		data = json.loads(query.send({
+			'token': None,
 			'session_id': cherrypy.session._id
 		}, None, {
 			'Authorization': 'Key %s' % config.WEBSERVICE['key']
 		}))
 
-		return False
+		return self.config_session(data)
 
 	def logout(self):
 		cherrypy.session['id_webuser'] = None
@@ -79,6 +80,9 @@ class Session:
 			'Authorization': 'Key %s' % config.WEBSERVICE['key']
 		}))
 
+		return self.config_session(data)
+
+	def config_session(self, data):
 		if 'data' not in data:
 			return False
 		if data['success'] == False:
