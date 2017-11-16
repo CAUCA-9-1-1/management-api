@@ -40,6 +40,9 @@ class Session:
 		return self.reset_session()
 
 	def reset_session(self):
+		if not hasattr(config, "WEBSERVICE"):
+			return False
+
 		query = Request("%s/auth/" % config.WEBSERVICE['host'], 'GET')
 		data = json.loads(query.send({
 			'token': None,
@@ -64,6 +67,8 @@ class Session:
 		"""
 		self.logout()
 
+		if not hasattr(config, "WEBSERVICE"):
+			return False
 		if config.WEBSERVICE is None:
 			raise Exception("""You need to set 'WEBSERVICE' inside your config file
 				WEBSERVICE = {

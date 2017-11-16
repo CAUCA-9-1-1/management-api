@@ -92,7 +92,7 @@ class PageWithDevextreme:
 	def add_config(self):
 		access = []
 
-		if config.WEBSERVICE is not None and Session.get('access_token') is not None:
+		if hasattr(config, "WEBSERVICE") and config.WEBSERVICE is not None and Session.get('access_token') is not None:
 			config.WEBSERVICE.update({
 				'access_token': Session.get('access_token'),
 				'refresh_token': Session.get('refresh_token')
@@ -123,7 +123,7 @@ class PageWithDevextreme:
 			json.dumps({
 				'version': config.PACKAGE_VERSION,
 				'isdev': config.IS_DEV,
-				'webservice': config.WEBSERVICE,
+				'webservice': config.WEBSERVICE if hasattr(config, "WEBSERVICE") else "",
 				'webroot': config.WEBROOT
 			}))
 		)
