@@ -15,10 +15,12 @@ class AccessToken(Base):
 	refresh_token = Column(String(100))
 	created_on = Column(DateTime, default=datetime.now)
 	expires_in = Column(Integer, default=1)
+	session_id = Column(String(40))
 
-	def __init__(self, id_access_token, id_webuser, access_token, refresh_token, expires_in):
+	def __init__(self, id_access_token, id_webuser, access_token, refresh_token, expires_in, session_id=None):
 		self.id_access_token = id_access_token
 		self.id_webuser = id_webuser
 		self.access_token = access_token
 		self.refresh_token = refresh_token
 		self.expires_in = expires_in
+		self.session_id = session_id
