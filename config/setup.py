@@ -74,23 +74,22 @@ PACKAGE_VERSION = '__package_version__'
 PORT = 8080
 SESSION_TIMEOUT = 30
 
-# Page web
-CONTENT_SECURITY_POLICY_CONNECT = None
-VERSION = {}
-"""
-VERSION = {
-	'devExtreme': '17.1.8',
-	'jQuery': '3.2.1'
-}
-"""
-
 # Folder
 ROOT = os.path.abspath(os.getcwd())
 WEBROOT = '/'
 SEARCH_FOLDERS = ['app', 'cause.api.management']
 
+# Page web
+CONTENT_SECURITY_POLICY_CONNECT = None
+
+# Plugins version fill by plugins.json file
+VERSION = {}
+
 if os.path.isfile("config.json"):
 	override_each_json_config(locals(), "config.json")
+
+	if os.path.isfile("plugins.json"):
+		override_each_json_config(VERSION, "plugins.json")
 elif os.path.isfile("config.py"):
 	with open("config.py") as file:
 		exec(file.read())
