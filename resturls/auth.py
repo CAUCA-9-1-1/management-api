@@ -65,5 +65,11 @@ class Auth(Token, Base):
 	def logout(self, token_id):
 		with Database() as db:
 			data = db.query(AccessToken).filter(AccessToken.access_token == token_id).first()
-			data.logout_on = datetime.utcnow
-			db.commit()
+
+			if data is not None:
+				data.logout_on = datetime.now()
+				db.commit()
+
+		return {
+			'message': 'auth successfully logout'
+		}
