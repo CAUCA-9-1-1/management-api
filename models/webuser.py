@@ -27,7 +27,7 @@ class Webuser(Base):
 	__tablename__ = "tbl_webuser"
 
 	id_webuser = Column(String(36), primary_key=True)
-	username = Column(String(100))
+	username = Column(String(100), unique=True)
 	password = Column(String(100))
 	created_on = Column(DateTime, default=datetime.now)
 	is_active = Column(Boolean, default=True)
