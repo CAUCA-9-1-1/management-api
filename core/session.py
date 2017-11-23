@@ -54,6 +54,12 @@ class Session:
 		return self.config_session(data)
 
 	def logout(self):
+		if hasattr(config, "WEBSERVICE") and config.WEBSERVICE is not None:
+			query = Request("%s/auth/%s" % (config.WEBSERVICE['host'], Session.get('access_token')), 'DELETE')
+			query.send(None, None, {
+				'Authorization': 'Key %s' % config.WEBSERVICE['key']
+			})
+
 		cherrypy.session['id_webuser'] = None
 		cherrypy.session['access_token'] = None
 		cherrypy.session['refresh_token'] = None

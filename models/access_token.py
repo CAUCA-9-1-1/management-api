@@ -16,6 +16,7 @@ class AccessToken(Base):
 	created_on = Column(DateTime, default=datetime.now)
 	expires_in = Column(Integer, default=1)
 	session_id = Column(String(40))
+	logout_on = Column(DateTime)
 
 	def __init__(self, id_access_token, id_webuser, access_token, refresh_token, expires_in, session_id=None):
 		self.id_access_token = id_access_token

@@ -81,6 +81,8 @@ class Token:
 
 		if data is None:
 			return False
+		if data.logout_on is not None:
+			return False
 
 		expires = data.created_on + datetime.timedelta(0, data.expires_in)
 

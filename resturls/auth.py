@@ -1,3 +1,4 @@
+from datetime import datetime
 from .base import Base
 from .webuser import Webuser
 from ..core.database import Database
@@ -12,7 +13,7 @@ class Auth(Token, Base):
 		'GET': 'check_active_user',
 		'PUT': 'logon',
 		'POST': 'register',
-		'DELETE': '',
+		'DELETE': 'logout',
 		'PATCH': '',
 	}
 
@@ -60,3 +61,9 @@ class Auth(Token, Base):
 
 	def register(self, body):
 		return Webuser().create(body)
+
+	def logout(self, token_id):
+		with Database() as db:
+			data = db.query(AccessToken).filter(AccessToken.access_token == token_id).first()
+			data.logout_on = datetime.utcnow
+			db.commit()
