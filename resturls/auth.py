@@ -27,7 +27,7 @@ class Auth(Token, Base):
 
 	def _check_active_session(self, session_id):
 		with Database() as db:
-			data = db.query(AccessToken).filter(AccessToken.session_id == session_id).first()
+			data = db.query(AccessToken).filter(AccessToken.session_id == session_id, AccessToken.logout_on == None).first()
 
 			if data is None or self.valid_token(data.access_token) is False:
 				raise Exception("Invalid token id")
