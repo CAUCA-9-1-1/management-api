@@ -1,4 +1,5 @@
 import os
+import sys
 import logging
 import cherrypy
 import importlib
@@ -89,18 +90,19 @@ class ConfigBase:
 	@staticmethod
 	def add_page_from(package, page):
 		try:
+			page_loaded = None
 			page_name = "%s.%s" % (package, CaseFormat().pascal_to_snake(page))
-
 			file = '%s/%s.py' % (config.ROOT, page_name.replace('.', '/'))
+
 			if not os.path.isfile(file) and package[0:5] == 'cause':
 				file = '%s/%s.py' % (config.ROOT[0:config.ROOT.rfind('/')], page_name.replace('.', '/'))
 
-			if os.path.isfile(file):
+			if sys.version_info >= (3, 5) and os.path.isfile(file):
 				page_loaded = importlib.import_module(page_name, package)
+			elif sys.version_info < (3, 5) and os.path.isfile(file):
+				page_loaded = importlib.import_module(page_name)
 
-				return getattr(page_loaded, page)
-			else:
-				return None
+			return getattr(page_loaded, page) if page_loaded else None
 		except SystemError as e:
 			raise Exception("Loading exception on page '%s': %s" % (page_name, e))
 
