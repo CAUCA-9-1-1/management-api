@@ -51,7 +51,10 @@ class Session:
 			'Authorization': 'Key %s' % config.WEBSERVICE['key']
 		}))
 
-		return self.config_session(data)
+		if data is not None and 'data' in data:
+			return self.config_session(data)
+
+		return False
 
 	def logout(self):
 		if hasattr(config, "WEBSERVICE") and config.WEBSERVICE is not None:
