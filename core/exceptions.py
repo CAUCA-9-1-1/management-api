@@ -13,7 +13,7 @@ class PermissionException(Exception):
 
 
 def return_json_error(e):
-	logging.exception("Error from api class")
+	logging.exception("Error from api class: %s", e)
 
 	if isinstance(e, AuthentificationException):
 		cherrypy.response.status = "401 Unauthorized"

@@ -34,5 +34,4 @@ class RouteUrl(ExecuteApiClass):
 
 			raise PermissionException()
 		except Exception as e:
-			logging.error(e)
 			return_json_error(e)
