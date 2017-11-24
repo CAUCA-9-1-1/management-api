@@ -70,7 +70,7 @@ IS_SSL = False
 IS_UWSGI = True
 MODULE_NAME = 'cause-api-management'
 PACKAGE_NAME = None
-PACKAGE_VERSION = '__package_version__'
+PACKAGE_VERSION = ''
 PORT = 8080
 SESSION_TIMEOUT = 30
 
@@ -85,11 +85,15 @@ CONTENT_SECURITY_POLICY_CONNECT = None
 # Plugins version fill by plugins.json file
 VERSION = {}
 
-if os.path.isfile("config.json"):
-	override_each_json_config(locals(), "config.json")
+if os.path.isfile("config/config.json"):
+	override_each_json_config(locals(), "config/config.json")
 
-	if os.path.isfile("plugins.json"):
-		override_each_json_config(VERSION, "plugins.json")
+	if os.path.isfile("config/package.json"):
+		override_each_json_config(locals(), "config/package.json")
+	if os.path.isfile("config/plugins.json"):
+		override_each_json_config(VERSION, "config/plugins.json")
+elif os.path.isfile("config.json"):
+	override_each_json_config(locals(), "config.json")
 elif os.path.isfile("config.py"):
 	with open("config.py") as file:
 		exec(file.read())
