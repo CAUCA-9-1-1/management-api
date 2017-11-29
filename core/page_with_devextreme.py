@@ -85,14 +85,21 @@ class PageWithDevextreme:
 		self.body += tag
 
 	def add_cause(self):
+		javascript_folder = "cause-web-content"
+		template_folder = "cause-web-content"
+
 		if os.path.isdir("%s/static/cause-web-javascript" % config.ROOT):
-			self.js(['/static/cause-web-javascript/js/cause%s.js' % ("" if config.IS_DEV else ".min")])
+			javascript_folder = "cause-web-javascript"
 		if os.path.isdir("%s/static/cause-web-template" % config.ROOT):
-			self.to_head('<link rel="icon" href="/static/cause-web-template/images/favicon.png">')
-			self.to_head('<link rel="apple-touch-icon" href="/static/cause-web-template/images/logo.png" />')
-		if os.path.isdir("%s/static/cause-web-content" % config.ROOT):
-			self.js(['/static/cause-web-content/js/cause%s.js' % ("" if config.IS_DEV else ".min")])
-			self.to_head('<link rel="icon" href="/static/cause-web-content/images/favicon.png">')
+			template_folder = "cause-web-template"
+
+		self.to_head('<link rel="icon" href="/static/%s/images/favicon.png">' % template_folder)
+		self.to_head('<link rel="apple-touch-icon" href="/static/%s/images/logo.png" />' % template_folder)
+		self.to_head('<link rel="dx-theme" data-theme="generic.light" type="text/css" href="/static/%s/css/generic.light.custom-%s.css" />' % (template_folder, '17.2',))
+		self.to_head('<link rel="stylesheet" type="text/css" href="/static/%s/css/generic.cause.css" />' % template_folder)
+		self.to_head('<link rel="dx-template" type="text/html" href="/static/%s/layouts/DesktopLayout.html" />' % template_folder)
+		self.to_head('<link rel="stylesheet" type="text/css" href="/static/%s/css/generic.cause.css" />' % template_folder)
+		self.js(['/static/%s/js/cause%s.js' % (javascript_folder, "" if config.IS_DEV else ".min",)])
 
 		self.add_config()
 
