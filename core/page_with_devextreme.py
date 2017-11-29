@@ -1,6 +1,6 @@
+import os
 import json
 from ..config import setup as config
-from ..resturls.permissionwebuser import PermissionWebuser
 from .session import Session
 from .request import Request
 
@@ -85,8 +85,15 @@ class PageWithDevextreme:
 		self.body += tag
 
 	def add_cause(self):
-		self.js(['/static/cause-web-content/js/cause%s.js' % ("" if config.IS_DEV else ".min")])
-		self.to_head('<link rel="icon" href="/static/cause-web-content/images/favicon.png">')
+		if os.path.isdir("%s/static/cause-web-javascript" % config.ROOT):
+			self.js(['/static/cause-web-javascript/js/cause%s.js' % ("" if config.IS_DEV else ".min")])
+		if os.path.isdir("%s/static/cause-web-template" % config.ROOT):
+			self.to_head('<link rel="icon" href="/static/cause-web-template/images/favicon.png">')
+			self.to_head('<link rel="apple-touch-icon" href="/static/cause-web-template/images/logo.png" />')
+		if os.path.isdir("%s/static/cause-web-content" % config.ROOT):
+			self.js(['/static/cause-web-content/js/cause%s.js' % ("" if config.IS_DEV else ".min")])
+			self.to_head('<link rel="icon" href="/static/cause-web-content/images/favicon.png">')
+
 		self.add_config()
 
 	def add_config(self):
