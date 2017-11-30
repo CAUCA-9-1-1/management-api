@@ -95,9 +95,13 @@ class PageWithDevextreme:
 
 		self.to_head('<link rel="icon" href="/static/%s/images/favicon.png">' % template_folder)
 		self.to_head('<link rel="apple-touch-icon" href="/static/%s/images/logo.png" />' % template_folder)
-		self.to_head('<link rel="dx-theme" data-theme="generic.light" type="text/css" href="/static/%s/css/generic.light.custom-%s.css" />' % (template_folder, '17.2',))
-		self.to_head('<link rel="stylesheet" type="text/css" href="/static/%s/css/generic.cause.css" />' % template_folder)
 		self.to_head('<link rel="dx-template" type="text/html" href="/static/%s/layouts/DesktopLayout.html" />' % template_folder)
+		self.to_head('<link rel="stylesheet" type="text/css" href="/static/plugins/devExtreme/%s/css/dx.common.css" />' % config.VERSION["devExtreme"])
+		self.to_head('<link rel="stylesheet" type="text/css" href="/static/plugins/devExtreme/%s/css/dx.spa.css" />' % config.VERSION["devExtreme"])
+		self.to_head('<link rel="dx-theme" data-theme="generic.light" type="text/css" href="/static/%s/css/generic.light.custom-%s.css" />' % (
+			template_folder,
+			config.VERSION["devExtreme"][0:4],
+		))
 		self.to_head('<link rel="stylesheet" type="text/css" href="/static/%s/css/generic.cause.css" />' % template_folder)
 		self.js(['/static/%s/js/cause%s.js' % (javascript_folder, "" if config.IS_DEV else ".min",)])
 
