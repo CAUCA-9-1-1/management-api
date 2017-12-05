@@ -80,6 +80,7 @@ WEBROOT = '/'
 SEARCH_FOLDERS = ['app', 'cause.api.management']
 
 # Page web
+CACHE_MANIFEST = ""
 CONTENT_SECURITY_POLICY_CONNECT = None
 
 # Plugins version fill by plugins.json file

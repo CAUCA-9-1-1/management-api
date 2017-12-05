@@ -24,7 +24,7 @@ class PageWithDevextreme:
 			connect_src.append(config.CONTENT_SECURITY_POLICY_CONNECT)
 
 		self.html += '<!DOCTYPE html>'
-		self.html += '<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">'
+		self.html += '<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr" manifest="%s">' % config.CACHE_MANIFEST
 
 		self.to_head("""<meta http-equiv="Content-Security-Policy" content="
 						default-src 'self';
