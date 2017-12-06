@@ -23,8 +23,8 @@ class PageWithDevextreme:
 		if config.CONTENT_SECURITY_POLICY_CONNECT:
 			connect_src.append(config.CONTENT_SECURITY_POLICY_CONNECT)
 
-		self.html += '<!DOCTYPE html>'
-		self.html += '<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr" manifest="%s">' % config.CACHE_MANIFEST
+		self.html += '<!DOCTYPE html>\n'
+		self.html += '<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr" manifest="%s">\n' % config.CACHE_MANIFEST
 
 		self.to_head("""<meta http-equiv="Content-Security-Policy" content="
 						default-src 'self';
@@ -32,7 +32,7 @@ class PageWithDevextreme:
 						script-src 'self' 'unsafe-inline' 'unsafe-eval';
 						connect-src 'self' %s;
 						img-src 'self' data:;
-					"/>""" % (" ".join(connect_src))
+					"/>\n""" % (" ".join(connect_src))
 		)
 
 	def show(self):
@@ -40,7 +40,7 @@ class PageWithDevextreme:
 
 		:return: Complete HTML page
 		"""
-		self.html += '<head>' + self.head + '</head><body>' + self.body + '</body></html>'
+		self.html += '<head>\n' + self.head + '</head>\n<body>\n' + self.body + '</body>\n</html>'
 
 		return self.html
 
@@ -49,7 +49,7 @@ class PageWithDevextreme:
 
 		:param title: Page title
 		"""
-		self.head += '<title>' + title + '</title>'
+		self.head += '<title>' + title + '</title>\n'
 
 	def css(self, file):
 		""" Add a stylesheet file on page
@@ -58,9 +58,9 @@ class PageWithDevextreme:
 		"""
 		for f in file:
 			if isinstance(f, dict):
-				self.to_head('<link ' + ' '.join(['%s="%s"' % (key, value) for (key, value) in f.items()]) + ' />')
+				self.to_head('<link ' + ' '.join(['%s="%s"' % (key, value) for (key, value) in f.items()]) + ' />\n')
 			else:
-				self.to_head('<link rel="stylesheet" type="text/css" href="' + f + '" />')
+				self.to_head('<link rel="stylesheet" type="text/css" href="' + f + '" />\n')
 
 	def js(self, file):
 		""" Add a Javascript file on page
@@ -68,21 +68,21 @@ class PageWithDevextreme:
 		:param file: JS file
 		"""
 		for f in file:
-			self.to_head('<script type="text/javascript" src="' + f + '"></script>')
+			self.to_head('<script type="text/javascript" src="' + f + '"></script>\n')
 
 	def to_head(self, tag):
 		""" Add a generic html tag to the head
 
 		:param tag: HTML tag
 		"""
-		self.head += tag
+		self.head += tag + '\n'
 
 	def to_body(self, tag):
 		""" Add a generic html tag to the body
 
 		:param tag: HTML tag
 		"""
-		self.body += tag
+		self.body += tag + '\n'
 
 	def add_cause(self):
 		javascript_folder = "cause-web-content"
