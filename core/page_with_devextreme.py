@@ -26,6 +26,9 @@ class PageWithDevextreme:
 		self.html += '<!DOCTYPE html>\n'
 		self.html += '<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr" manifest="%s">\n' % config.CACHE_MANIFEST
 
+		if config.CACHE_MANIFEST:
+			self.to_head('<meta http-equiv="Cache-Control" content="no-store" />')
+
 		self.to_head("""<meta http-equiv="Content-Security-Policy" content="
 						default-src 'self';
 						style-src 'self' 'unsafe-inline';
