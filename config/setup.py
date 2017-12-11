@@ -26,6 +26,13 @@ def validate_minimal_config():
 	if IS_DEV:
 		LOGS['level'] = 'info'
 
+def detect_uwsgi():
+	try:
+		import uwsgi
+
+		return True
+	except ImportError:
+		return False
 
 # Database config
 DATABASE = None
@@ -67,7 +74,7 @@ PERMISSION = {
 FORCE_CAMELCASE = False
 IS_DEV = False
 IS_SSL = False
-IS_UWSGI = True
+IS_UWSGI = detect_uwsgi()
 MODULE_NAME = 'cause-api-management'
 PACKAGE_NAME = None
 PACKAGE_VERSION = ''
