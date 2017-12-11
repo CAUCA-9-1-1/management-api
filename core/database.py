@@ -34,7 +34,7 @@ class Database:
 				config.DATABASE[db_name]['dbname'],
 			), echo=config.IS_DEV)
 
-		self.session = self.get_session(db_name)
+		self.session = self.init_session(db_name)
 		self.metadata = MetaData(bind=self.engine)
 
 	def __enter__(self):
@@ -42,10 +42,9 @@ class Database:
 
 	def __exit__(self, exc_type, exc_val, exc_tb):
 		self.session.expunge_all()
-		self.session.close()
 
-	def get_session(self, db_name):
-		if db_name not in SQL_ENGINE_SESSION:
+	def init_session(self, db_name):
+		if db_name not in SQL_ENGINE_SESSION or SQL_ENGINE_SESSION[db_name] is None:
 			Session = sessionmaker()
 			Session.configure(bind=self.engine)
 
