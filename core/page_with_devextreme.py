@@ -19,12 +19,13 @@ class PageWithDevextreme:
 		""" Place the HTML5 doctype
 		"""
 		connect_src = []
+		file_cache = '/manifest/' if config.IS_UWSGI is False and config.CACHE_MANIFEST else config.CACHE_MANIFEST
 
 		if config.CONTENT_SECURITY_POLICY_CONNECT:
 			connect_src.append(config.CONTENT_SECURITY_POLICY_CONNECT)
 
 		self.html += '<!DOCTYPE html>\n'
-		self.html += '<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr" manifest="%s">\n' % config.CACHE_MANIFEST
+		self.html += '<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr" manifest="%s">\n' % file_cache
 
 		if config.CACHE_MANIFEST:
 			self.to_head('<meta http-equiv="Cache-Control" content="no-store" />')

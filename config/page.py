@@ -25,4 +25,7 @@ class ConfigPage(ConfigBase):
 		if os.path.exists("%s/app/%s.py" % (config.ROOT, 'ajax')):
 			self.add_page('Ajax')
 
+		if config.IS_UWSGI is False and config.CACHE_MANIFEST:
+			self.add_page('Manifest')
+
 		ConfigBase.complete()
