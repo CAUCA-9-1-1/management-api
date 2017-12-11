@@ -1,8 +1,9 @@
-import logging
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.orm import sessionmaker
 from ..config import setup as config
 
+
+SQL_ENGINE_SESSION = {}
 
 class Database:
 	engine = None
@@ -33,10 +34,7 @@ class Database:
 				config.DATABASE[db_name]['dbname'],
 			), echo=config.IS_DEV)
 
-		Session = sessionmaker()
-		Session.configure(bind=self.engine)
-
-		self.session = Session()
+		self.session = self.get_session(db_name)
 		self.metadata = MetaData(bind=self.engine)
 
 	def __enter__(self):
@@ -45,6 +43,15 @@ class Database:
 	def __exit__(self, exc_type, exc_val, exc_tb):
 		self.session.expunge_all()
 		self.session.close()
+
+	def get_session(self, db_name):
+		if db_name not in SQL_ENGINE_SESSION:
+			Session = sessionmaker()
+			Session.configure(bind=self.engine)
+
+			SQL_ENGINE_SESSION[db_name] = Session()
+
+		return SQL_ENGINE_SESSION[db_name]
 
 	def execute(self, query, args=()):
 		result = self.engine.execute(query, args)
