@@ -14,7 +14,7 @@ class Logging:
 		if not os.path.exists("%s/data/%s/" % (config.ROOT, 'logs')):
 			os.makedirs("%s/data/%s/" % (config.ROOT, 'logs'))
 
-		if config.IS_DEV is False:
+		if config.IS_DEV is True:
 			self.activate_logging()
 			self.enable_debug_console()
 
@@ -24,9 +24,6 @@ class Logging:
 		log_dir = os.path.join(config.ROOT, "data/logs")
 		log_file = os.path.join(log_dir, "%s.log" % config.LOGS_NAME)
 		log_level_no = getattr(logging, config.LOGS['level'].upper())
-
-		if not os.path.isdir(log_dir):
-			os.mkdir(log_dir)
 
 		logging.basicConfig(
 			filename=log_file,
