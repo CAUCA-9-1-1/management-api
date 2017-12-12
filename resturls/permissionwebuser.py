@@ -9,7 +9,7 @@ class PermissionWebuser(Base):
 		'GET': 'get',
 		'PUT': '',
 		'POST': '',
-		'DELETE': '',
+		'DELETE': 'remove',
 		'PATCH': '',
 	}
 
@@ -48,3 +48,12 @@ class PermissionWebuser(Base):
 				permission.access = permission.default_value
 
 		return permission_object
+
+	def remove(self, id_webuser):
+		permision_object = PermissionObject()
+		id_permission_object = permision_object.get_id_permission_object('webuser', id_webuser)
+		result_permission_object = permision_object.remove(id_permission_object)
+
+		return {
+			'message': 'permission webuser successfully removed'
+		}
