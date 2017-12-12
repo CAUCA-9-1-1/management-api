@@ -116,7 +116,7 @@ class Session:
 			'reset_password': '0'
 		}
 
-		if 'token' in config.WEBSERVICE:
+		if 'access_token' in config.WEBSERVICE:
 			query = Request("%s/webuser/" % config.WEBSERVICE['host'], 'PUT')
 			query.send(data, None, {
 				'Authorization': 'Token %s' % config.WEBSERVICE['access_token']
