@@ -24,7 +24,8 @@ create table tbl_access_token
 	refresh_token varchar(100),
 	created_on timestamp default now(),
 	expires_in integer default 7200,
-	session_id varchar(40)
+	session_id varchar(40),
+	logout_on timestamp
 )
 ;
 
