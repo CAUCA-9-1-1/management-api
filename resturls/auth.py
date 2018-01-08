@@ -8,68 +8,69 @@ from ..models.apis_action import ApisAction
 
 
 class Auth(Token, Base):
-	expires_in_minutes = 120
-	mapping_method = {
-		'GET': 'check_active_user',
-		'PUT': 'logon',
-		'POST': 'register',
-		'DELETE': 'logout',
-		'PATCH': '',
-	}
+    expires_in_minutes = 120
+    mapping_method = {
+        'GET': 'check_active_user',
+        'PUT': 'logon',
+        'POST': 'register',
+        'DELETE': 'logout',
+        'PATCH': '',
+    }
 
-	def check_active_user(self, token_id=None, session_id=None):
-		if token_id is not None:
-			return self._check_active_token(token_id)
-		elif session_id is not None:
-			return self._check_active_session(session_id)
-		else:
-			raise Exception("You need to pass a token id or session id")
+    def check_active_user(self, token_id=None, session_id=None):
+        if token_id is not None:
+            return self._check_active_token(token_id)
+        elif session_id is not None:
+            return self._check_active_session(session_id)
+        else:
+            raise Exception("You need to pass a token id or session id")
 
-	def _check_active_session(self, session_id):
-		with Database() as db:
-			data = db.query(AccessToken).filter(AccessToken.session_id == session_id, AccessToken.logout_on == None).first()
+    def _check_active_session(self, session_id):
+        with Database() as db:
+            data = db.query(AccessToken).filter(AccessToken.session_id == session_id,
+                                                AccessToken.logout_on == None).first()
 
-			if data is None or self.valid_token(data.access_token) is False:
-				raise Exception("Invalid token id")
+            if data is None or self.valid_token(data.access_token) is False:
+                raise Exception("Invalid token id")
 
-			return {
-				'data': self._get_user_information(data)
-			}
+            return {
+                'data': self._get_user_information(data)
+            }
 
-	def _check_active_token(self, token_id):
-		with Database() as db:
-			data = db.query(AccessToken).filter(AccessToken.access_token == token_id).first()
+    def _check_active_token(self, token_id):
+        with Database() as db:
+            data = db.query(AccessToken).filter(AccessToken.access_token == token_id).first()
 
-			if data is None or self.valid_token(token_id) is False:
-				raise Exception("Invalid token id")
+            if data is None or self.valid_token(token_id) is False:
+                raise Exception("Invalid token id")
 
-			return {
-				'data': self._get_user_information(data)
-			}
+            return {
+                'data': self._get_user_information(data)
+            }
 
-	def _get_user_information(self, data):
-		with Database() as db:
-			user = Webuser().get(data.id_webuser)
-			apis = db.query(ApisAction).filter(
-				ApisAction.id_webuser == data.id_webuser).order_by(
-				ApisAction.action_time.desc()).first()
+    def _get_user_information(self, data):
+        with Database() as db:
+            user = Webuser().get(data.id_webuser)
+            apis = db.query(ApisAction).filter(
+                ApisAction.id_webuser == data.id_webuser).order_by(
+                ApisAction.action_time.desc()).first()
 
-			data.username = user['data'].username
-			data.user_ip = apis.action_ip if apis is not None else None
+            data.username = user['data'].username
+            data.user_ip = apis.action_ip if apis is not None else None
 
-			return data
+            return data
 
-	def register(self, body):
-		return Webuser().create(body)
+    def register(self, body):
+        return Webuser().create(body)
 
-	def logout(self, token_id):
-		with Database() as db:
-			data = db.query(AccessToken).filter(AccessToken.access_token == token_id).first()
+    def logout(self, token_id):
+        with Database() as db:
+            data = db.query(AccessToken).filter(AccessToken.access_token == token_id).first()
 
-			if data is not None:
-				data.logout_on = datetime.now()
-				db.commit()
+            if data is not None:
+                data.logout_on = datetime.now()
+                db.commit()
 
-		return {
-			'message': 'auth successfully logout'
-		}
+        return {
+            'message': 'auth successfully logout'
+        }
