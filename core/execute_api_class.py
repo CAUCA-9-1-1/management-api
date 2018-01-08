@@ -37,14 +37,14 @@ class ExecuteApiClass(LoadClass):
 				'error': '',
 			})
 
-		logging.error('Start a request : %s' % datetime.utcnow())
+		logging.error('Start a request : %s on %s' % (name, datetime.utcnow()))
 
 		try:
-			return self.encode(self.exec_method(name, args))
+			return self.encode(name, self.exec_method(name, args))
 		except Exception as e:
 			return_json_error(e)
 
-	def encode(self, return_data):
+	def encode(self, name, return_data):
 		data = {
 			'success': True,
 			'error': ''
@@ -57,7 +57,7 @@ class ExecuteApiClass(LoadClass):
 
 		data.update(return_data)
 
-		logging.error('Stop a request : %s' % datetime.utcnow())
+		logging.error('Stop a request : %s on %s' % (name, datetime.utcnow()))
 
 		return json.dumps(data, cls=JsonEncoder)
 
