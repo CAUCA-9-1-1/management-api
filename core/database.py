@@ -1,3 +1,4 @@
+import time
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.orm import sessionmaker
 from ..config import setup as config
@@ -14,15 +15,15 @@ class Database:
     def __init__(self, db_name='general'):
         if config.DATABASE is None:
             raise Exception("""You need to set 'DATABASE' inside your config file
-				DATABASE = {
-					'general': {
-						'engine': '',
-						'dbname': ''
-					}
-				}""")
+                DATABASE = {
+                    'general': {
+                        'engine': '',
+                        'dbname': ''
+                    }
+                }""")
 
-        self.engine = self.create_engine(db_name)
-        self.session = self.init_session(db_name)
+        self.engine = self._get_engine(db_name)
+        self.session = self._get_session(db_name)
         self.metadata = MetaData(bind=self.engine)
 
     def __enter__(self):
@@ -31,15 +32,16 @@ class Database:
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.session.expunge_all()
 
-    def init_session(self, db_name):
+    def _get_session(self, db_name):
         if db_name not in SQL_ENGINE_SESSION or SQL_ENGINE_SESSION[db_name] is None:
-            Session = sessionmaker(bind=self.engine)
+            Session = sessionmaker()
+            Session.configure(bind=self.engine)
 
             SQL_ENGINE_SESSION[db_name] = Session()
 
         return SQL_ENGINE_SESSION[db_name]
 
-    def create_engine(self, db_name):
+    def _get_engine(self, db_name):
         if db_name not in SQL_ENGINE or SQL_ENGINE[db_name] is None:
             if 'username' in config.DATABASE[db_name]:
                 SQL_ENGINE[db_name] = create_engine('%s://%s:%s@%s/%s' % (
@@ -59,15 +61,11 @@ class Database:
 
     def execute(self, query, args=()):
         result = self.engine.execute(query, args)
-        result_assoc = None
 
-        if result is None:
-            return None
-        if result.returns_rows is not False:
-            result_assoc = self._fetch_assoc(result.fetchall(), result.keys())
+        if result is not None and result.returns_rows is not False:
+            return self._fetch_assoc(result.fetchall(), result.keys())
 
-        result.close()
-        return result_assoc
+        return None
 
     def callproc(self, procedure, args=()):
         cursor = self.engine.raw_connection().cursor()
@@ -81,22 +79,16 @@ class Database:
 
     def get_row(self, query, args=()):
         result = self.engine.execute(query, args)
-        result_assoc = self._fecth_row_assoc(result.fetchone(), result.keys())
 
-        result.close()
-        return result_assoc
+        return self._fecth_row_assoc(result.fetchone(), result.keys())
 
     def get(self, query, args=()):
         result = self.engine.execute(query, args)
-        value = None
 
-        if result is None:
-            return None
-        if result.returns_rows is not False:
-            value = self._first(result)
+        if result is not None and result.returns_rows is not False:
+            return self._first(result)
 
-        result.close()
-        return value
+        return None
 
     def query(self, *args):
         return self.session.query(*args)
@@ -108,6 +100,13 @@ class Database:
 
     def commit(self):
         self.session.commit()
+
+        """ We implicitly call "begin" because sometime we receive the following error.
+            We could create a new session for every transaction, but this is slower. So we create one for each HTTP request.
+        
+            Error : This session is in 'prepared' state; no further " "SQL can be emitted within this transaction
+        """
+        self.session.begin(subtransactions=True)
 
         return True
 
