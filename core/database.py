@@ -2,6 +2,7 @@ from sqlalchemy import create_engine, MetaData
 from sqlalchemy.orm import sessionmaker
 from ..config import setup as config
 
+SQL_ENGINE = {}
 SQL_ENGINE_SESSION = {}
 
 
@@ -20,20 +21,7 @@ class Database:
 					}
 				}""")
 
-        if 'username' in config.DATABASE[db_name]:
-            self.engine = create_engine('%s://%s:%s@%s/%s' % (
-                config.DATABASE[db_name]['engine'],
-                config.DATABASE[db_name]['username'],
-                config.DATABASE[db_name]['password'],
-                config.DATABASE[db_name]['host'],
-                config.DATABASE[db_name]['dbname'],
-            ), echo=config.IS_DEV)
-        else:
-            self.engine = create_engine('%s:///%s' % (
-                config.DATABASE[db_name]['engine'],
-                config.DATABASE[db_name]['dbname'],
-            ), echo=config.IS_DEV)
-
+        self.engine = self.create_engine(db_name)
         self.session = self.init_session(db_name)
         self.metadata = MetaData(bind=self.engine)
 
@@ -45,20 +33,41 @@ class Database:
 
     def init_session(self, db_name):
         if db_name not in SQL_ENGINE_SESSION or SQL_ENGINE_SESSION[db_name] is None:
-            Session = sessionmaker()
-            Session.configure(bind=self.engine)
+            Session = sessionmaker(bind=self.engine)
 
             SQL_ENGINE_SESSION[db_name] = Session()
 
         return SQL_ENGINE_SESSION[db_name]
 
+    def create_engine(self, db_name):
+        if db_name not in SQL_ENGINE or SQL_ENGINE[db_name] is None:
+            if 'username' in config.DATABASE[db_name]:
+                SQL_ENGINE[db_name] = create_engine('%s://%s:%s@%s/%s' % (
+                    config.DATABASE[db_name]['engine'],
+                    config.DATABASE[db_name]['username'],
+                    config.DATABASE[db_name]['password'],
+                    config.DATABASE[db_name]['host'],
+                    config.DATABASE[db_name]['dbname'],
+                ), echo=config.IS_DEV)
+            else:
+                SQL_ENGINE[db_name] = self.engine = create_engine('%s:///%s' % (
+                    config.DATABASE[db_name]['engine'],
+                    config.DATABASE[db_name]['dbname'],
+                ), echo=config.IS_DEV)
+
+        return SQL_ENGINE[db_name]
+
     def execute(self, query, args=()):
         result = self.engine.execute(query, args)
+        result_assoc = None
 
-        if result is None or result.returns_rows is False:
+        if result is None:
             return None
+        if result.returns_rows is not False:
+            result_assoc = self._fetch_assoc(result.fetchall(), result.keys())
 
-        return self.fetch_assoc(result.fetchall(), result.keys())
+        result.close()
+        return result_assoc
 
     def callproc(self, procedure, args=()):
         cursor = self.engine.raw_connection().cursor()
@@ -68,22 +77,26 @@ class Database:
 
         cursor.callproc(procedure, args)
 
-        return self.fetch_assoc(cursor.fetchall(), self.keys_of_cursor(cursor))
+        return self._fetch_assoc(cursor.fetchall(), self._keys_of_cursor(cursor))
 
     def get_row(self, query, args=()):
         result = self.engine.execute(query, args)
+        result_assoc = self._fecth_row_assoc(result.fetchone(), result.keys())
 
-        return self.fecth_row_assoc(result.fetchone(), result.keys())
+        result.close()
+        return result_assoc
 
     def get(self, query, args=()):
-        query = self.engine.execute(query, args)
+        result = self.engine.execute(query, args)
+        value = None
 
-        try:
-            for row in query:
-                for val in row:
-                    return val
-        except:
+        if result is None:
             return None
+        if result.returns_rows is not False:
+            value = self._first(result)
+
+        result.close()
+        return value
 
     def query(self, *args):
         return self.session.query(*args)
@@ -98,7 +111,14 @@ class Database:
 
         return True
 
-    def keys_of_cursor(self, cursor):
+    def _first(self, result):
+        for row in result:
+            for val in row:
+                return val
+
+        return None
+
+    def _keys_of_cursor(self, cursor):
         keys = list()
 
         # If we use python3-mysqldb
@@ -115,18 +135,18 @@ class Database:
 
         return keys
 
-    def fetch_assoc(self, rows, keys=None):
+    def _fetch_assoc(self, rows, keys=None):
         result = list()
 
         try:
             for row in rows:
-                result.append(self.fecth_row_assoc(row, keys))
+                result.append(self._fecth_row_assoc(row, keys))
         except:
             pass
 
         return result
 
-    def fecth_row_assoc(self, row, keys):
+    def _fecth_row_assoc(self, row, keys):
         nb = 0
         my_row = {}
 
