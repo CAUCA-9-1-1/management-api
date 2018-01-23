@@ -105,6 +105,7 @@ class Session:
 		cherrypy.session['access_token'] = data['data']['access_token']
 		cherrypy.session['refresh_token'] = data['data']['refresh_token'] if 'refresh_token' in data['data'] else ''
 		cherrypy.session['id_webuser'] = data['data']['id_webuser'] if 'id_webuser' in data['data'] else ''
+		cherrypy.session['remote_ip'] = cherrypy.request.headers["Remote-Addr"]
 
 		return True
 
