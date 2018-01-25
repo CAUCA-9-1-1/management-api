@@ -31,15 +31,16 @@ class Database:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.session.expunge_all()
+        self.session.close()
 
     def _get_session(self, db_name):
         if db_name not in SQL_ENGINE_SESSION or SQL_ENGINE_SESSION[db_name] is None:
             Session = sessionmaker()
             Session.configure(bind=self.engine)
 
-            SQL_ENGINE_SESSION[db_name] = Session()
+            SQL_ENGINE_SESSION[db_name] = Session
 
-        return SQL_ENGINE_SESSION[db_name]
+        return SQL_ENGINE_SESSION[db_name]()
 
     def _get_engine(self, db_name):
         if db_name not in SQL_ENGINE or SQL_ENGINE[db_name] is None:
@@ -100,13 +101,6 @@ class Database:
 
     def commit(self):
         self.session.commit()
-
-        """ We implicitly call "begin" because sometime we receive the following error.
-            We could create a new session for every transaction, but this is slower. So we create one for each HTTP request.
-        
-            Error : This session is in 'prepared' state; no further " "SQL can be emitted within this transaction
-        """
-        self.session.begin(subtransactions=True)
 
         return True
 
