@@ -1,6 +1,5 @@
-import time
 from sqlalchemy import create_engine, MetaData
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import scoped_session, sessionmaker
 from ..config import setup as config
 
 SQL_ENGINE = {}
@@ -35,7 +34,7 @@ class Database:
 
     def _get_session(self, db_name):
         if db_name not in SQL_ENGINE_SESSION or SQL_ENGINE_SESSION[db_name] is None:
-            Session = sessionmaker()
+            Session = scoped_session(sessionmaker())
             Session.configure(bind=self.engine)
 
             SQL_ENGINE_SESSION[db_name] = Session
