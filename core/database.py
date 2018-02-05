@@ -41,21 +41,32 @@ class Database:
 
         return SQL_ENGINE_SESSION[db_name]()
 
+    def _get_uri(self, db_name):
+        if isinstance(config.DATABASE[db_name], str):
+            return config.DATABASE[db_name]
+
+        if 'username' in config.DATABASE[db_name]:
+            return '%s://%s:%s@%s/%s' % (
+                config.DATABASE[db_name]['engine'],
+                config.DATABASE[db_name]['username'],
+                config.DATABASE[db_name]['password'],
+                config.DATABASE[db_name]['host'],
+                config.DATABASE[db_name]['dbname'],
+            )
+
+        return '%s:///%s' % (
+            config.DATABASE[db_name]['engine'],
+            config.DATABASE[db_name]['dbname'],
+        )
+
     def _get_engine(self, db_name):
         if db_name not in SQL_ENGINE or SQL_ENGINE[db_name] is None:
-            if 'username' in config.DATABASE[db_name]:
-                SQL_ENGINE[db_name] = create_engine('%s://%s:%s@%s/%s' % (
-                    config.DATABASE[db_name]['engine'],
-                    config.DATABASE[db_name]['username'],
-                    config.DATABASE[db_name]['password'],
-                    config.DATABASE[db_name]['host'],
-                    config.DATABASE[db_name]['dbname'],
-                ), echo=config.IS_DEV)
-            else:
-                SQL_ENGINE[db_name] = self.engine = create_engine('%s:///%s' % (
-                    config.DATABASE[db_name]['engine'],
-                    config.DATABASE[db_name]['dbname'],
-                ), echo=config.IS_DEV)
+            uri = self._get_uri(db_name)
+
+            SQL_ENGINE[db_name] = create_engine(
+                uri,
+                echo=config.IS_DEV,
+            )
 
         return SQL_ENGINE[db_name]
 
