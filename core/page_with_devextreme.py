@@ -99,6 +99,7 @@ class PageWithDevextreme:
 
 		self.to_head('<link rel="icon" href="/static/%s/images/favicon.png">' % template_folder)
 		self.to_head('<link rel="apple-touch-icon" href="/static/%s/images/logo.png" />' % template_folder)
+		self.to_head('<link rel="dx-template" type="text/html" href="/static/%s/layouts/MobileLayout.html" />' % template_folder)
 		self.to_head('<link rel="dx-template" type="text/html" href="/static/%s/layouts/DesktopLayout.html" />' % template_folder)
 		self.to_head('<link rel="stylesheet" type="text/css" href="/static/plugins/devExtreme/%s/css/dx.common.css" />' % config.VERSION["devExtreme"])
 		self.to_head('<link rel="stylesheet" type="text/css" href="/static/plugins/devExtreme/%s/css/dx.spa.css" />' % config.VERSION["devExtreme"])
