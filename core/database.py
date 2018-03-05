@@ -87,7 +87,10 @@ class Database:
 
         cursor.callproc(procedure, args)
 
-        return self._fetch_assoc(cursor.fetchall(), self._keys_of_cursor(cursor))
+        result = self._fetch_assoc(cursor.fetchall(), self._keys_of_cursor(cursor))
+        cursor.close()
+
+        return result
 
     def get_row(self, query, args=()):
         result = self.engine.execute(query, args)
