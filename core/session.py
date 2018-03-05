@@ -6,119 +6,120 @@ from .request import Request
 
 
 class Session:
-	@staticmethod
-	def get(key):
-		if key in cherrypy.session:
-			return cherrypy.session[key]
+    @staticmethod
+    def get(key):
+        if key in cherrypy.session:
+            return cherrypy.session[key]
 
-		return None
+        return None
 
-	@staticmethod
-	def set(key, value):
-		cherrypy.session[key] = value
+    @staticmethod
+    def set(key, value):
+        cherrypy.session[key] = value
 
-	def permission(self, feature_name):
-		if Session.get('access_token') is None:
-			return False
+    def permission(self, feature_name):
+        if Session.get('access_token') is None:
+            return False
 
-		query = Request("%s/permissionwebuser/%s" % (config.WEBSERVICE['host'], Session.get('id_webuser')), 'GET')
-		data = json.loads(query.send(None, None, {
-			'Authorization': 'Token %s' % Session.get('access_token')
-		}))
+        query = Request("%s/permissionwebuser/%s" % (config.WEBSERVICE['host'], Session.get('id_webuser')), 'GET')
+        data = json.loads(query.send(None, None, {
+            'Authorization': 'Token %s' % Session.get('access_token')
+        }))
 
-		if 'data' in data and data['data'] is not None:
-			for permission in data['data']:
-				if permission['feature_name'] == feature_name:
-					return True
+        if 'data' in data and data['data'] is not None:
+            for permission in data['data']:
+                if permission['feature_name'] == feature_name:
+                    return True
 
-		return False
+        return False
 
-	def is_logged(self):
-		if Session.get('id_webuser') is not None:
-			return True
+    def is_logged(self):
+        if Session.get('id_webuser') is not None:
+            return True
 
-		return self.reset_session()
+        return self.reset_session()
 
-	def reset_session(self):
-		if not hasattr(config, "WEBSERVICE"):
-			return False
+    def reset_session(self):
+        if not hasattr(config, "WEBSERVICE"):
+            return False
 
-		query = Request("%s/auth/" % config.WEBSERVICE['host'], 'GET')
-		data = json.loads(query.send({
-			'token': None,
-			'session_id': cherrypy.session._id
-		}, None, {
-			'Authorization': 'Key %s' % config.WEBSERVICE['key']
-		}))
+        query = Request("%s/auth/" % config.WEBSERVICE['host'], 'GET')
+        data = json.loads(query.send({
+            'token': None,
+            'session_id': cherrypy.session._id
+        }, None, {
+            'Authorization': 'Key %s' % config.WEBSERVICE['key']
+        }))
 
-		if data is not None and 'data' in data:
-			return self.config_session(data)
+        if data is not None and 'data' in data:
+            return self.config_session(data)
 
-		return False
+        return False
 
-	def logout(self):
-		if hasattr(config, "WEBSERVICE") and config.WEBSERVICE is not None:
-			query = Request("%s/auth/%s" % (config.WEBSERVICE['host'], Session.get('access_token')), 'DELETE')
-			query.send(None, None, {
-				'Authorization': 'Key %s' % config.WEBSERVICE['key']
-			})
+    def logout(self):
+        if hasattr(config, "WEBSERVICE") and config.WEBSERVICE is not None:
+            query = Request("%s/auth/%s" % (config.WEBSERVICE['host'], Session.get('access_token')), 'DELETE')
+            query.send(None, None, {
+                'Authorization': 'Key %s' % config.WEBSERVICE['key']
+            })
 
-		cherrypy.session['id_webuser'] = None
-		cherrypy.session['access_token'] = None
-		cherrypy.session['refresh_token'] = None
+        cherrypy.session['id_webuser'] = None
+        cherrypy.session['access_token'] = None
+        cherrypy.session['refresh_token'] = None
 
-	def logon(self, username, password=''):
-		""" Generate a session on server
+    def logon(self, username, password=''):
+        """ Generate a session on server
 
-		:param username: Username of user to open the session
-		:param password: Password of user to open the session
-		:return: True if the session is valid
-		"""
-		self.logout()
+        :param username: Username of user to open the session
+        :param password: Password of user to open the session
+        :return: True if the session is valid
+        """
+        self.logout()
 
-		if not hasattr(config, "WEBSERVICE"):
-			return False
-		if config.WEBSERVICE is None:
-			raise Exception("""You need to set 'WEBSERVICE' inside your config file
-				WEBSERVICE = {
-					'host': '',
-					'key': ''
-				}""")
+        if not hasattr(config, "WEBSERVICE"):
+            return False
+        if config.WEBSERVICE is None:
+            raise Exception("""You need to set 'WEBSERVICE' inside your config file
+                WEBSERVICE = {
+                    'host': '',
+                    'key': ''
+                }""")
 
-		query = Request("%s/auth/" % config.WEBSERVICE['host'], 'PUT')
-		data = json.loads(query.send({
-			'username': username,
-			'password': password,
-			'session_id': cherrypy.session._id
-		}, None, {
-			'Authorization': 'Key %s' % config.WEBSERVICE['key']
-		}))
+        query = Request("%s/auth/" % config.WEBSERVICE['host'], 'PUT')
+        data = json.loads(query.send({
+            'username': username,
+            'password': password,
+            'session_id': cherrypy.session._id
+        }, None, {
+            'Authorization': 'Key %s' % config.WEBSERVICE['key']
+        }))
 
-		return self.config_session(data)
+        return self.config_session(data)
 
-	def config_session(self, data):
-		if 'data' not in data:
-			return False
-		if data['success'] == False:
-			return False
+    def config_session(self, data):
+        if 'data' not in data:
+            return False
+        if data['success'] == False:
+            return False
 
-		cherrypy.session['access_token'] = data['data']['access_token']
-		cherrypy.session['refresh_token'] = data['data']['refresh_token'] if 'refresh_token' in data['data'] else ''
-		cherrypy.session['id_webuser'] = data['data']['id_webuser'] if 'id_webuser' in data['data'] else ''
-		cherrypy.session['remote_ip'] = cherrypy.request.headers["Remote-Addr"]
+        cherrypy.session['access_token'] = data['data']['access_token']
+        cherrypy.session['refresh_token'] = data['data']['refresh_token'] if 'refresh_token' in data['data'] else ''
+        cherrypy.session['id_webuser'] = data['data']['id_webuser'] if 'id_webuser' in data['data'] else ''
+        cherrypy.session['remote_ip'] = cherrypy.request.headers["Remote-Addr"]
 
-		return True
+        return True
 
+    def change_password(self, password):
+        data = {
+            'id_webuser': cherrypy.session['id_webuser'],
+            'password': password,
+            'reset_password': '0'
+        }
 
-	def change_password(self, password):
-		data = {
-			'id_webuser': cherrypy.session['id_webuser'],
-			'password': password,
-			'reset_password': '0'
-		}
+        if 'access_token' in config.WEBSERVICE:
+            query = Request("%s/webuser/" % config.WEBSERVICE['host'], 'PUT')
+            query.send(data, None, {
+                'Authorization': 'Token %s' % config.WEBSERVICE['access_token']
+            })
 
-		if 'access_token' in config.WEBSERVICE:
-			query = Request("%s/webuser/" % config.WEBSERVICE['host'], 'PUT')
-			query.send(data, None, {
-				'Authorization': 'Token %s' % config.WEBSERVICE['access_token']
-			})
+        self.logout()
