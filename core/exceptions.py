@@ -5,25 +5,28 @@ from .json import JsonEncoder
 
 
 class AuthentificationException(Exception):
-	pass
+    pass
 
 
 class PermissionException(Exception):
-	pass
+    pass
+
+class RequestException(Exception):
+    pass
 
 
 def return_json_error(e):
-	logging.exception("Error from api class: %s", e)
+    logging.exception("Error from api class: %s", e)
 
-	if isinstance(e, AuthentificationException):
-		cherrypy.response.status = "401 Unauthorized"
-	elif isinstance(e, PermissionException):
-		cherrypy.response.status = "403 Forbidden"
-	else:
-		cherrypy.response.status = "400 Bad Request"
+    if isinstance(e, AuthentificationException):
+        cherrypy.response.status = "401 Unauthorized"
+    elif isinstance(e, PermissionException):
+        cherrypy.response.status = "403 Forbidden"
+    else:
+        cherrypy.response.status = "400 Bad Request"
 
-	return json.dumps({
-		'success': False,
-		'error': e,
-		'data': None
-	}, cls=JsonEncoder)
+    return json.dumps({
+        'success': False,
+        'error': e,
+        'data': None
+    }, cls=JsonEncoder)

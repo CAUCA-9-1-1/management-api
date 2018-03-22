@@ -1,8 +1,8 @@
 import json
-import logging
 import cherrypy
 from ..config import setup as config
 from .request import Request
+from .exceptions import RequestException
 
 
 class Session:
@@ -21,10 +21,13 @@ class Session:
         if Session.get('access_token') is None:
             return False
 
-        query = Request("%s/permissionwebuser/%s" % (config.WEBSERVICE['host'], Session.get('id_webuser')), 'GET')
-        data = json.loads(query.send(None, None, {
-            'Authorization': 'Token %s' % Session.get('access_token')
-        }))
+        try:
+            query = Request("%s/permissionwebuser/%s" % (config.WEBSERVICE['host'], Session.get('id_webuser')), 'GET')
+            data = json.loads(query.send(None, None, {
+                'Authorization': 'Token %s' % Session.get('access_token')
+            }))
+        except RequestException:
+            data = None
 
         if 'data' in data and data['data'] is not None:
             for permission in data['data']:
@@ -43,13 +46,16 @@ class Session:
         if not hasattr(config, "WEBSERVICE"):
             return False
 
-        query = Request("%s/auth/" % config.WEBSERVICE['host'], 'GET')
-        data = json.loads(query.send({
-            'token': None,
-            'session_id': cherrypy.session._id
-        }, None, {
-            'Authorization': 'Key %s' % config.WEBSERVICE['key']
-        }))
+        try:
+            query = Request("%s/auth/" % config.WEBSERVICE['host'], 'GET')
+            data = json.loads(query.send({
+                'token': None,
+                'session_id': cherrypy.session._id
+            }, None, {
+                'Authorization': 'Key %s' % config.WEBSERVICE['key']
+            }))
+        except RequestException:
+            data = None
 
         if data is not None and 'data' in data:
             return self.config_session(data)
@@ -58,10 +64,13 @@ class Session:
 
     def logout(self):
         if hasattr(config, "WEBSERVICE") and config.WEBSERVICE is not None:
-            query = Request("%s/auth/%s" % (config.WEBSERVICE['host'], Session.get('access_token')), 'DELETE')
-            query.send(None, None, {
-                'Authorization': 'Key %s' % config.WEBSERVICE['key']
-            })
+            try:
+                query = Request("%s/auth/%s" % (config.WEBSERVICE['host'], Session.get('access_token')), 'DELETE')
+                query.send(None, None, {
+                    'Authorization': 'Key %s' % config.WEBSERVICE['key']
+                })
+            except RequestException:
+                pass
 
         cherrypy.session['id_webuser'] = None
         cherrypy.session['access_token'] = None
@@ -85,14 +94,17 @@ class Session:
                     'key': ''
                 }""")
 
-        query = Request("%s/auth/" % config.WEBSERVICE['host'], 'PUT')
-        data = json.loads(query.send({
-            'username': username,
-            'password': password,
-            'session_id': cherrypy.session._id
-        }, None, {
-            'Authorization': 'Key %s' % config.WEBSERVICE['key']
-        }))
+        try:
+            query = Request("%s/auth/" % config.WEBSERVICE['host'], 'PUT')
+            data = json.loads(query.send({
+                'username': username,
+                'password': password,
+                'session_id': cherrypy.session._id
+            }, None, {
+                'Authorization': 'Key %s' % config.WEBSERVICE['key']
+            }))
+        except RequestException:
+            return False
 
         return self.config_session(data)
 
@@ -116,10 +128,16 @@ class Session:
             'reset_password': '0'
         }
 
-        if 'access_token' in config.WEBSERVICE:
+        if 'access_token' not in config.WEBSERVICE:
+            return False
+
+        try:
             query = Request("%s/webuser/" % config.WEBSERVICE['host'], 'PUT')
             query.send(data, None, {
                 'Authorization': 'Token %s' % config.WEBSERVICE['access_token']
             })
+        except RequestException:
+            return False
 
         self.logout()
+        return True
