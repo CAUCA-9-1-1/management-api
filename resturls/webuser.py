@@ -1,7 +1,9 @@
 import uuid
+import logging
 from .base import Base
 from ..core.database import Database
 from ..core.password import Password
+from ..core.session import Session
 from ..models.webuser import Webuser as Table
 
 
@@ -18,9 +20,9 @@ class Webuser(Base):
     def get(self, id_webuser=None, is_active=None):
         """ Return all webuser information
 
-		:param id_webuser: UUID
-		:param is_active: BOOLEAN
-		"""
+        :param id_webuser: UUID
+        :param is_active: BOOLEAN
+        """
         with Database() as db:
             if id_webuser is None and is_active is None:
                 data = db.query(Table).all()
@@ -84,11 +86,11 @@ class Webuser(Base):
         }
 
     def modify(self, body):
-        if self.has_permission('RightAdmin') is False:
-            self.no_access()
-
         if 'id_webuser' not in body:
             raise Exception("You need to pass a id_webuser")
+
+        if self.has_permission('RightAdmin') is False and str(body['id_webuser']) != str(Base.logged_id_webuser):
+            self.no_access()
 
         with Database() as db:
             data = db.query(Table).get(body['id_webuser'])

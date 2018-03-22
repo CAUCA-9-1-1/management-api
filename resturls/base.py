@@ -1,5 +1,4 @@
 import json
-
 from ..config import setup as config
 from ..core.database import Database
 from ..core.exceptions import PermissionException

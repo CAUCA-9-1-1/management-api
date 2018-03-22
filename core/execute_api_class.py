@@ -77,7 +77,7 @@ class ExecuteApiClass(LoadClass):
     def has_access(self, controller):
         try:
             class_name = controller.__name__
-        except AttributeError as e:
+        except AttributeError:
             class_name = ''
 
         if Token().valid_access_from_header() is True or (
