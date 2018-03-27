@@ -79,13 +79,11 @@ class ConfigBase:
             if page_class is not None:
                 break
 
-        if page_class is None:
-            logging.exception("Can't mount the page: %s, config: %s" % (
-                page, ConfigBase.site_config
-            ))
-        else:
+        try:
             path = path if path is not None else '/%s' % page.lower()
             cherrypy.tree.mount(page_class(), path, ConfigBase.site_config)
+        except (ValueError, TypeError):
+            logging.info("Can't mount the page: %s, config: %s" % (page, ConfigBase.site_config))
 
     @staticmethod
     def add_page_from(package, page):
