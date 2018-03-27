@@ -8,10 +8,13 @@ from .exceptions import RequestException
 class Session:
     @staticmethod
     def get(key):
-        if key in cherrypy.session:
-            return cherrypy.session[key]
-
-        return None
+        try:
+            if key in cherrypy.session:
+                return cherrypy.session[key]
+            else:
+                return None
+        except AttributeError:
+            return None
 
     @staticmethod
     def set(key, value):
