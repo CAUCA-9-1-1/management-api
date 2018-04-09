@@ -23,15 +23,20 @@ class Token:
         access_token = self.generate_token()
         refresh_token = self.generate_token()
 
+        try:
+            expires = self.expires_in_minutes
+        except AttributeError:
+            expires = 1
+
         with Database() as db:
             db.insert(AccessToken(id_access_token, Base.logged_id_webuser, access_token, refresh_token,
-                                  self.expires_in_minutes * 60, session_id))
+                                  expires * 60, session_id))
             db.commit()
 
         return {
             'data': {
                 'authorization_type': 'Token',
-                'expires_in': (self.expires_in_minutes * 60),
+                'expires_in': (expires * 60),
                 'access_token': access_token,
                 'refresh_token': refresh_token,
                 'id_webuser': Base.logged_id_webuser,
