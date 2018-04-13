@@ -5,10 +5,10 @@ from ..core.database import Database
 from ..core.token import Token
 from ..models.access_token import AccessToken
 from ..models.apis_action import ApisAction
-
+from ..config import setup as config
 
 class Auth(Token, Base):
-    expires_in_minutes = 120
+    expires_in_minutes = config.TOKEN_TIMEOUT
     mapping_method = {
         'GET': 'check_active_user',
         'PUT': 'logon',

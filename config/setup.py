@@ -80,6 +80,7 @@ PACKAGE_NAME = None
 PACKAGE_VERSION = ''
 PORT = 8080
 SESSION_TIMEOUT = 30
+TOKEN_TIMEOUT = 120
 
 # Folder
 ROOT = os.path.abspath(os.getcwd())
