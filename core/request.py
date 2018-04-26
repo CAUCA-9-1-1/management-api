@@ -33,13 +33,13 @@ class Request:
                 request.add_header(key, headers[key])
 
         try:
-            logging.info('Url = %s, Method = %s' % (self.url, self.method))
+            logging.info('Url = %s, Method = %s', self.url, self.method)
 
             with urllib.request.urlopen(request) as response:
                 if response.status == 200:
-                    html = response.read().decode('UTF-8')
-
-                    logging.info('Response = %s' % html)
+                    raw = response.read()
+                    html = raw.decode('utf-8')
+                    logging.info('Response = %s', raw)
                 else:
                     raise RequestException('Response.status = %s' % str(response.status))
         except urllib.error.HTTPError:

@@ -20,7 +20,7 @@ class MultiLang:
 			json_data = {'id_language_content': id_language_content}
 			json_data.update(Utilities.list_to_dict(data, 'language_code', 'description'))
 		except Exception as e:
-			logging.info("Error on get of LanguageContent : %s" % e)
+			logging.info("Error on get of LanguageContent : %s", e)
 
 		return json_data
 
@@ -31,7 +31,7 @@ class MultiLang:
 
 			return MultiLang.get_name_by_language(language, names)
 		except Exception as e:
-			logging.info("Error on get of LanguageContent : %s" % e)
+			logging.info("Error on get of LanguageContent : %s", e)
 
 	@staticmethod
 	def get_name_by_language(language, names):

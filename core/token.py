@@ -76,7 +76,7 @@ class Token:
             data = db.query(AccessSecretkey).filter(AccessSecretkey.secretkey == key).first()
 
         if data is None:
-            logging.info("This 'Access Secretkey' is not valid : '%s'" % key)
+            logging.info("This 'Access Secretkey' is not valid : '%s'", key)
             return False
 
         return True if data.is_active is True else False
