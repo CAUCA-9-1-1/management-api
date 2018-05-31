@@ -49,7 +49,7 @@ class PermissionObject(Base):
 
         id_permission_object = uuid.uuid4()
         id_permission_object_parent = body[
-            'id_permission_object_parent'] if 'id_permission_object_parent' in body else None
+            'id_permission_object_parent'] if 'id_permission_object_parent' in body and body['id_permission_object_parent'] else None
         is_group = body['is_group'] if 'is_group' in body else False
         group_name = body['group_name'] if 'group_name' in body else ''
 
