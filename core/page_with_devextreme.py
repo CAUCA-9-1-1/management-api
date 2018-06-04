@@ -1,5 +1,6 @@
 import os
 import json
+from datetime import datetime
 from ..config import setup as config
 from .session import Session
 from .request import Request
@@ -150,6 +151,38 @@ class PageWithDevextreme:
 				'webroot': config.WEBROOT
 			}))
 		)
+
+	def create_cache(self, files):
+		version = config.PACKAGE_VERSION if config.PACKAGE_VERSION != '__package_version__' else datetime.now().strftime("%Y-%m-%d_%H:%M")
+		cache_files = files + [
+			'/static/cause-web-template/css/generic.cause.css',
+			'/static/cause-web-template/css/generic.light.custom-%s.css' % config.VERSION["devExtreme"][0:4],
+			'/static/cause-web-template/layouts/MobileLayout.css',
+			'/static/plugins/devExtreme/%s/css/dx.common.css' % config.VERSION["devExtreme"],
+			'/static/plugins/devExtreme/%s/css/dx.spa.css' % config.VERSION["devExtreme"],
+			'/static/plugins/devExtreme/%s/layouts/Simple/SimpleLayout.css' % config.VERSION["devExtreme"],
+			'/static/plugins/devExtreme/%s/layouts/Popup/PopupLayout.css' % config.VERSION["devExtreme"],
+			'/static/plugins/devExtreme/%s/layouts/SlideOut/SlideOutLayout.css' % config.VERSION["devExtreme"],
+			'/static/plugins/devExtreme/%s/layouts/Desktop/DesktopLayout.css' % config.VERSION["devExtreme"],
+			'/static/plugins/devExtreme/%s/js/jszip.js' % config.VERSION["devExtreme"],
+			'/static/plugins/devExtreme/%s/js/knockout-%s.js' % (config.VERSION["devExtreme"], config.VERSION["knockout"]),
+			'/static/plugins/devExtreme/%s/js/dx.all.js' % config.VERSION["devExtreme"],
+			'/static/plugins/fontAwesome/%s/css/font-awesome.min.css' % config.VERSION["fontAwesome"],
+			'/static/plugins/jQuery/jquery-%s.js' % config.VERSION["jQuery"],
+			'/static/plugins/cldrjs/%s/cldr.js' % config.VERSION["cldrjs"],
+			'/static/cause-web-javascript/js/addons/date.format.js',
+			'/static/cause-web-javascript/js/cause.js',
+		]
+
+		self.to_head("""
+			<script>
+				if ('Worker' in window) {
+					navigator.serviceWorker.register('/static/cache-worker.js?version=%s', {
+						scope: '/static/'
+					});
+				}
+			</script>
+		""" % version)
 
 if __name__ == '__main__':
 	PageWithDevextreme()
