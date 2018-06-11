@@ -19,9 +19,15 @@ class PageWithDevextreme:
 	def __init__(self):
 		""" Place the HTML5 doctype
 		"""
+		script_src = []
+		default_src = []
 		connect_src = []
 		file_cache = '/manifest/' if config.IS_UWSGI is False and config.CACHE_MANIFEST else config.CACHE_MANIFEST
 
+		if config.SCRIPT_SECURITY_POLICY_CONNECT:
+			script_src.append(config.SCRIPT_SECURITY_POLICY_CONNECT)
+		if config.DEFAULT_SECURITY_POLICY_CONNECT:
+			default_src.append(config.DEFAULT_SECURITY_POLICY_CONNECT)
 		if config.CONTENT_SECURITY_POLICY_CONNECT:
 			connect_src.append(config.CONTENT_SECURITY_POLICY_CONNECT)
 
@@ -32,12 +38,12 @@ class PageWithDevextreme:
 			self.to_head('<meta http-equiv="Cache-Control" content="no-store" />')
 
 		self.to_head("""<meta http-equiv="Content-Security-Policy" content="
-						default-src 'self';
+						default-src 'self' %s;
 						style-src 'self' 'unsafe-inline';
-						script-src 'self' 'unsafe-inline' 'unsafe-eval';
+						script-src 'self' 'unsafe-inline' 'unsafe-eval' %s;
 						connect-src 'self' %s;
 						img-src 'self' data:;
-					"/>\n""" % (" ".join(connect_src))
+					"/>\n""" % (" ".join(default_src), " ".join(script_src), " ".join(connect_src))
 		)
 
 	def show(self):

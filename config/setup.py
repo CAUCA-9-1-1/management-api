@@ -14,7 +14,7 @@ def validate_minimal_config():
 	if PACKAGE_NAME is None:
 		raise Exception("You need to set 'PACKAGE_NAME' inside your config file")
 
-	if PERMISSION is None:
+	if PERMISSION is None and NOPERMISSION is False:
 		system_id = str(uuid.uuid4())
 
 		raise Exception("""
@@ -63,6 +63,7 @@ LOGS = {
 }
 
 # Permission in tbl_permission on DB "general"
+NOPERMISSION = False
 PERMISSION = None
 """
 PERMISSION = {
@@ -89,6 +90,7 @@ SEARCH_FOLDERS = ['app', 'cause.api.management']
 
 # Page web
 CACHE_MANIFEST = ""
+SCRIPT_SECURITY_POLICY_CONNECT = None
 CONTENT_SECURITY_POLICY_CONNECT = None
 
 # Plugins version fill by plugins.json file
