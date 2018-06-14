@@ -90,7 +90,8 @@ SEARCH_FOLDERS = ['app', 'cause.api.management']
 
 # Page web
 CACHE_MANIFEST = ""
-SCRIPT_SECURITY_POLICY_CONNECT = None
+CONTENT_SECURITY_POLICY_SCRIPT = None
+CONTENT_SECURITY_POLICY_DEFAULT = None
 CONTENT_SECURITY_POLICY_CONNECT = None
 
 # Plugins version fill by plugins.json file

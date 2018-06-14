@@ -24,10 +24,10 @@ class PageWithDevextreme:
 		connect_src = []
 		file_cache = '/manifest/' if config.IS_UWSGI is False and config.CACHE_MANIFEST else config.CACHE_MANIFEST
 
-		if config.SCRIPT_SECURITY_POLICY_CONNECT:
-			script_src.append(config.SCRIPT_SECURITY_POLICY_CONNECT)
-		if config.DEFAULT_SECURITY_POLICY_CONNECT:
-			default_src.append(config.DEFAULT_SECURITY_POLICY_CONNECT)
+		if config.CONTENT_SECURITY_POLICY_SCRIPT:
+			script_src.append(config.CONTENT_SECURITY_POLICY_SCRIPT)
+		if config.CONTENT_SECURITY_POLICY_DEFAULT:
+			default_src.append(config.CONTENT_SECURITY_POLICY_DEFAULT)
 		if config.CONTENT_SECURITY_POLICY_CONNECT:
 			connect_src.append(config.CONTENT_SECURITY_POLICY_CONNECT)
 
