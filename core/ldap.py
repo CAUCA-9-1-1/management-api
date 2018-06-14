@@ -29,9 +29,9 @@ class LDAP:
         if not self.link.bind():
             return False
 
-        if not self.link.search('dc=ad,dc=cauca,dc=ca', '(uid={0})'.format(user), ldap3.SUBTREE):
+        if not self.link.search('dc=ad,dc=cauca,dc=ca', '(uid={0})'.format(user)):
             return False
-
+        logging.info("OK, PASS FIRST SEARCH")
         for entry in self.link.response:
             if self.check_password(entry["dn"], password):
                 return True
@@ -39,7 +39,7 @@ class LDAP:
         return False
 
     def check_group(self, user, group):
-        if not self.link.search('dc=ad,dc=cauca,dc=ca', '(cn={0})'.format(group), ldap3.SUBTREE, attributes=['memberUid']):
+        if not self.link.search('dc=ad,dc=cauca,dc=ca', '(cn={0})'.format(group), attributes=['memberUid']):
             return False
 
         for entry in self.link.response:
