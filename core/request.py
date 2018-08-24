@@ -33,7 +33,7 @@ class Request:
                 request.add_header(key, headers[key])
 
         try:
-            logging.info('Url = %s, Method = %s', self.url, self.method)
+            logging.info('Url = %s, Data = %s, Method = %s', self.url, data, self.method)
 
             with urllib.request.urlopen(request) as response:
                 if response.status == 200:
