@@ -5,6 +5,7 @@ from ..core.database import Database
 from ..core.password import Password
 from ..core.session import Session
 from ..models.webuser import Webuser as Table
+from .permissionobject import PermissionObject
 
 
 class Webuser(Base):
@@ -78,6 +79,13 @@ class Webuser(Base):
             db.commit()
 
             if 'attributes' in body:
+                if 'groupPermission' in body['attributes']:
+                    PermissionObject().create({
+                        'object_table': 'websuer',
+                        'generic_id': id_webuser,
+                        'id_permission_object_parent': body['attributes']['groupPermission']
+                    })
+
                 webuser.set_attributes(id_webuser, body['attributes'])
 
         return {
