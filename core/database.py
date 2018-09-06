@@ -1,3 +1,4 @@
+import logging
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.orm import scoped_session, sessionmaker
 from ..config import setup as config
@@ -95,7 +96,10 @@ class Database:
     def get_row(self, query, args=()):
         result = self.engine.execute(query, args)
 
-        return self._fecth_row_assoc(result.fetchone(), result.keys())
+        try:
+            return self._fecth_row_assoc(result.fetchone(), result.keys())
+        except:
+            return []
 
     def get(self, query, args=()):
         result = self.engine.execute(query, args)
