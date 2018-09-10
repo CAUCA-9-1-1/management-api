@@ -81,7 +81,7 @@ class Webuser(Base):
             if 'attributes' in body:
                 if 'groupPermission' in body['attributes']:
                     PermissionObject().create({
-                        'object_table': 'websuer',
+                        'object_table': 'webuser',
                         'generic_id': id_webuser,
                         'id_permission_object_parent': body['attributes']['groupPermission']
                     })
