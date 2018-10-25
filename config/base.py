@@ -12,7 +12,11 @@ class ConfigBase:
     cherrypy_version = 0
 
     def __init__(self, specific_base_config=None):
-        ConfigBase.cherrypy_version = int(cherrypy.__version__.split('.', 1)[0])
+        try:
+            ConfigBase.cherrypy_version = int(cherrypy.__version__.split('.', 1)[0])
+        except ValueError:
+            ConfigBase.cherrypy_version = 8
+
         ConfigBase.site_config = {}
         ConfigBase.base_config = {
             'tools.sessions.on': True,
