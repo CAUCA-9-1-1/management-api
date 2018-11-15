@@ -1,3 +1,4 @@
+import ssl
 import logging
 import urllib.parse
 import urllib.request
@@ -13,8 +14,6 @@ class Request:
         self.method = method
 
     def send(self, data, url=None, headers=None):
-        html = '{}'
-
         if url is not None:
             self.url = url
 
@@ -32,16 +31,18 @@ class Request:
             for key in headers:
                 request.add_header(key, headers[key])
 
-        try:
-            logging.info('Url = %s, Data = %s, Method = %s', self.url, data, self.method)
+        logging.info('Url = %s, Data = %s, Method = %s', self.url, data, self.method)
 
-            with urllib.request.urlopen(request) as response:
-                if response.status == 200:
-                    raw = response.read()
-                    html = raw.decode('utf-8')
-                    logging.info('Response = %s', raw)
-                else:
-                    raise RequestException('Response.status = %s' % str(response.status))
+        if "https://" in self.url:
+            return self.send_https(request)
+        return self.send_http(request)
+
+    def send_https(self, request):
+        try:
+            context = ssl._create_unverified_context()
+
+            with urllib.request.urlopen(request, context=context) as response:
+                html = self.read_request(response)
         except urllib.error.HTTPError as e:
             logging.info('Url: %s, Response: %s', self.url, e)
             raise RequestException("Error during request, we can't access to %s" % self.url)
@@ -49,4 +50,27 @@ class Request:
             logging.info('Url: %s, Response: %s', self.url, e)
             raise RequestException("URL error, we can't access to %s" % self.url)
 
-        return html
+        return html or '{}'
+
+    def send_http(self, request):
+        try:
+            with urllib.request.urlopen(request) as response:
+                html = self.read_request(response)
+        except urllib.error.HTTPError as e:
+            logging.info('Url: %s, Response: %s', self.url, e)
+            raise RequestException("Error during request, we can't access to %s" % self.url)
+        except urllib.error.URLError as e:
+            logging.info('Url: %s, Response: %s', self.url, e)
+            raise RequestException("URL error, we can't access to %s" % self.url)
+
+        return html or '{}'
+
+    def read_request(self, response):
+        if response.status == 200:
+            raw = response.read()
+            html = raw.decode('utf-8')
+            logging.info('Response = %s', raw)
+        else:
+            raise RequestException('Response.status = %s' % str(response.status))
+
+        return html or None
