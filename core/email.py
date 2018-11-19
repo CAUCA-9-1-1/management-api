@@ -5,6 +5,7 @@ from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
 from email.mime.application import MIMEApplication
 from email.mime.multipart import MIMEMultipart
+from ..config import setup as config
 
 
 class Email:
@@ -40,7 +41,7 @@ class Email:
 		self.msg['To'] = ", ".join(to)
 
 		try:
-			server = smtplib.SMTP('localhost')
+			server = smtplib.SMTP(config.SMTP['host'])
 			server.sendmail(self.msg['From'], to, self.msg.as_string())
 			server.quit()
 		except:

@@ -83,6 +83,11 @@ PORT = 8080
 SESSION_TIMEOUT = 30
 TOKEN_TIMEOUT = 120
 
+# Email
+SMTP = {
+	'host': 'localhost'
+}
+
 # Folder
 ROOT = os.path.abspath(os.getcwd())
 WEBROOT = '/'
