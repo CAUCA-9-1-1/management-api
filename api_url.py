@@ -16,6 +16,7 @@ class ApiUrl(ExecuteApiClass):
             RouteUrl('/apisaction/', 'ApisAction')
             RouteUrl('/permission/', 'Permission')
             RouteUrl('/permission/:id_permission_object', 'Permission')
+            RouteUrl('/permissiongroup/', 'PermissionGroup')
             RouteUrl('/permissionobject/', 'PermissionObject')
             RouteUrl('/permissionobject/:id_permission_object', 'PermissionObject')
             RouteUrl('/permissionsystem/', 'PermissionSystem')
@@ -44,6 +45,10 @@ class ApiUrl(ExecuteApiClass):
     @cherrypy.expose
     def permission(self, *args, **kwargs):
         return self.call_method('Permission', self.get_argument(args, kwargs))
+
+    @cherrypy.expose
+    def permissiongroup(self, *args, **kwargs):
+        return self.call_method('PermissionGroup', self.get_argument(args, kwargs))
 
     @cherrypy.expose
     def permissionobject(self, *args, **kwargs):
