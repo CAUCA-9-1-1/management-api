@@ -11,6 +11,8 @@ from ..config import setup as config
 class Email:
 	""" Create and send an email
 	"""
+	recipients = []
+
 	def __init__(self, email_from, subject, content=None):
 		self.msg = MIMEMultipart('alternative')
 		self.msg['Subject'] = subject
@@ -29,20 +31,24 @@ class Email:
 
 			self.msg.attach(img)
 
-	def send(self, to):
-		if type(to) == str:
-			if ";" in to:
-				to = to.split(";")
-			elif "," in to:
-				to = to.split(",")
+	def add_recipient(self, email, recipient_type="To"):
+		if type(email) == str:
+			if ";" in email:
+				email = email.split(";")
+			elif "," in email:
+				email = email.split(",")
 			else:
-				to = [to]
+				email = [email]
 
-		self.msg['To'] = ", ".join(to)
+		self.recipients = self.recipients + email
+		self.msg[recipient_type] = ", ".join(email)
+
+	def send(self, to):
+		self.add_recipient(to, "To")
 
 		try:
 			server = smtplib.SMTP(config.SMTP['host'])
-			server.sendmail(self.msg['From'], to, self.msg.as_string())
+			server.sendmail(self.msg['From'], self.recipients, self.msg.as_string())
 			server.quit()
 		except:
 			logging.exception("We can't send the email")
