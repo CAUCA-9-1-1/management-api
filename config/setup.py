@@ -24,7 +24,7 @@ def validate_minimal_config():
 		""" % (system_id, system_id, PACKAGE_NAME))
 
 	if IS_DEV:
-		LOGS['level'] = 'info'
+		LOGS['level'] = 'debug'
 
 def detect_uwsgi():
 	try:
