@@ -17,6 +17,11 @@ class Auth(Token, Base):
         'PATCH': '',
     }
 
+    def logon(self, username=None, password=None, session_id=None):
+        data = super().logon(username, password, session_id)
+
+        return self._check_active_token(data['data']['access_token'])
+
     def check_active_user(self, token_id=None, session_id=None):
         if token_id is not None:
             return self._check_active_token(token_id)
@@ -56,6 +61,7 @@ class Auth(Token, Base):
                 ApisAction.action_time.desc()).first()
 
             data.username = user['data'].username
+            data.user_attributes = user['data'].attributes
             data.user_ip = apis.action_ip if apis is not None else None
 
             return data
