@@ -66,7 +66,7 @@ class Webuser(Base):
 
     def create(self, body):
         id_webuser = uuid.uuid4()
-        is_active = self.has_permission('RightAdmin')
+        is_active = self.has_permission('AccessUserManagement')
 
         if 'username' not in body or 'password' not in body:
             raise Exception("You need to pass a 'username' and 'password'")
@@ -97,7 +97,7 @@ class Webuser(Base):
         if 'id_webuser' not in body:
             raise Exception("You need to pass a id_webuser")
 
-        if self.has_permission('RightAdmin') is False and str(body['id_webuser']) != str(Base.logged_id_webuser):
+        if self.has_permission('AccessUserManagement') is False and str(body['id_webuser']) != str(Base.logged_id_webuser):
             self.no_access()
 
         with Database() as db:
