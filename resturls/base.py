@@ -1,4 +1,5 @@
 import json
+import logging
 from ..config import setup as config
 from ..core.database import Database
 from ..core.exceptions import PermissionException
@@ -32,8 +33,11 @@ class Base:
                 object_id = args[field_id]
 
         with Database() as db:
-            db.insert(Table(Base.logged_id_webuser, method, json.dumps(args), class_name, object_id))
-            db.commit()
+            try:
+                db.insert(Table(Base.logged_id_webuser, method, json.dumps(args), class_name, object_id))
+                db.commit()
+            except:
+                logging.info("Error SQL %s %s", Base.logged_id_webuser, args)
 
     def options(self):
         return {}

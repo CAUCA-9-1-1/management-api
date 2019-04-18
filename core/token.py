@@ -102,6 +102,6 @@ class Token:
     def active_session(self, token):
         with Database() as db:
             data = db.query(AccessToken).filter(AccessToken.access_token == token).first()
-
+        logging.info("------------------------------ %s", data)
         if data:
             Base.logged_id_webuser = data.id_webuser
