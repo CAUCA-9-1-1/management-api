@@ -28,15 +28,15 @@ class Auth(Token, Base):
         elif session_id is not None:
             return self._check_active_session(session_id)
         else:
-            raise Exception("You need to pass a token id or session id")
+            return  # No token id or session id received
 
     def _check_active_session(self, session_id):
         with Database() as db:
             data = db.query(AccessToken).filter(AccessToken.session_id == session_id,
-                                                AccessToken.logout_on == None).first()
+                                                AccessToken.logout_on is None).first()
 
             if data is None or self.valid_token(data.access_token) is False:
-                raise Exception("Invalid token id")
+                return  # Invalid token id
 
             return {
                 'data': self._get_user_information(data)
@@ -47,7 +47,7 @@ class Auth(Token, Base):
             data = db.query(AccessToken).filter(AccessToken.access_token == token_id).first()
 
             if data is None or self.valid_token(token_id) is False:
-                raise Exception("Invalid token id")
+                return  # Invalid token id
 
             return {
                 'data': self._get_user_information(data)
