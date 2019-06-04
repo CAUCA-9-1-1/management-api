@@ -37,8 +37,6 @@ class ExecuteApiClass(LoadClass):
                 'error': '',
             })
 
-        logging.error('Start a request : %s on %s' % (name, datetime.utcnow()))
-
         try:
             return self.encode(name, self.exec_method(name, args))
         except Exception as e:
@@ -56,8 +54,6 @@ class ExecuteApiClass(LoadClass):
             return_data = CaseFormat().convert(return_data)
 
         data.update(return_data)
-
-        logging.error('Stop a request : %s on %s' % (name, datetime.utcnow()))
 
         return json.dumps(data, cls=JsonEncoder)
 
