@@ -7,7 +7,6 @@ import cherrypy
 
 from .database import Database
 from ..config import setup as config
-from ..core.exceptions import AuthentificationException
 from ..models.access_secretkey import AccessSecretkey
 from ..models.access_token import AccessToken
 from ..resturls.base import Base
@@ -17,7 +16,7 @@ from ..resturls.webuser import Webuser
 class Token:
     def logon(self, username=None, password=None, session_id=None):
         if username is None or Webuser().logon(username, password) is False:
-            raise AuthentificationException("authentification failed")
+            return  # Authentication failed
 
         id_access_token = uuid.uuid4()
         access_token = self.generate_token()

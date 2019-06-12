@@ -7,6 +7,7 @@ from ..models.access_token import AccessToken
 from ..models.apis_action import ApisAction
 from ..config import setup as config
 
+
 class Auth(Token, Base):
     expires_in_minutes = config.TOKEN_TIMEOUT
     mapping_method = {
@@ -20,7 +21,10 @@ class Auth(Token, Base):
     def logon(self, username=None, password=None, session_id=None):
         data = super().logon(username, password, session_id)
 
-        return self._check_active_token(data['data']['access_token'])
+        if data is not None:
+            return self._check_active_token(data['data']['access_token'])
+        else:
+            return
 
     def check_active_user(self, token_id=None, session_id=None):
         if token_id is not None:
