@@ -1,6 +1,5 @@
 import copy
 import inspect
-from datetime import datetime
 from ..config import setup as config
 from .token import Token
 from .case_format import CaseFormat
@@ -16,7 +15,7 @@ class ExecuteApiClass(LoadClass):
         class_object = self.load_class(name)
 
         if not self.has_access(class_object):
-            raise AuthentificationException()
+            return  # Authentication failed
 
         method_name = self.has_method(class_object)
         api_method = getattr(class_object, method_name, None)
@@ -38,11 +37,11 @@ class ExecuteApiClass(LoadClass):
             })
 
         try:
-            return self.encode(name, self.exec_method(name, args))
+            return self.encode(self.exec_method(name, args))
         except Exception as e:
             return_json_error(e)
 
-    def encode(self, name, return_data):
+    def encode(self, return_data):
         data = {
             'success': True,
             'error': ''
@@ -53,7 +52,8 @@ class ExecuteApiClass(LoadClass):
         if isinstance(return_data, dict):
             return_data = CaseFormat().convert(return_data)
 
-        data.update(return_data)
+        if return_data is not None:
+            data.update(return_data)
 
         return json.dumps(data, cls=JsonEncoder)
 

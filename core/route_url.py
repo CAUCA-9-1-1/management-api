@@ -34,7 +34,7 @@ class RouteUrl(ExecuteApiClass):
 
                 return_data = execute(self.controller(), **args)
 
-                return self.encode('RouteUrl', return_data)
+                return self.encode(return_data)
 
             raise PermissionException()
         except Exception as e:
