@@ -15,7 +15,10 @@ class ExecuteApiClass(LoadClass):
         class_object = self.load_class(name)
 
         if not self.has_access(class_object):
-            return  # Authentication failed
+            return {
+                'success': False,
+                'error': '',
+            }
 
         method_name = self.has_method(class_object)
         api_method = getattr(class_object, method_name, None)

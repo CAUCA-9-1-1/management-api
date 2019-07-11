@@ -32,7 +32,9 @@ class Auth(Token, Base):
         elif session_id is not None:
             return self._check_active_session(session_id)
         else:
-            return  # No token id or session id received
+            return {
+                'success': False
+            }
 
     def _check_active_session(self, session_id):
         with Database() as db:
@@ -40,7 +42,9 @@ class Auth(Token, Base):
                                                 AccessToken.logout_on is None).first()
 
             if data is None or self.valid_token(data.access_token) is False:
-                return  # Invalid token id
+                return {
+                    'success': False
+                }
 
             return {
                 'data': self._get_user_information(data)
@@ -51,7 +55,9 @@ class Auth(Token, Base):
             data = db.query(AccessToken).filter(AccessToken.access_token == token_id).first()
 
             if data is None or self.valid_token(token_id) is False:
-                return  # Invalid token id
+                return {
+                    'success': False
+                }
 
             return {
                 'data': self._get_user_information(data)
