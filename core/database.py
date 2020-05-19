@@ -67,7 +67,7 @@ class Database:
             SQL_ENGINE[db_name] = create_engine(
                 uri,
                 echo=config.IS_DEV,
-                pool_recycle=(3600 if "mysql" in uri else -1),
+                pool_recycle=3600,
             )
 
         return SQL_ENGINE[db_name]
