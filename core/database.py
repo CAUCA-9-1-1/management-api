@@ -63,11 +63,16 @@ class Database:
     def _get_engine(self, db_name):
         if db_name not in SQL_ENGINE or SQL_ENGINE[db_name] is None:
             uri = self._get_uri(db_name)
+            pool_size = 5
+            
+            if 'pool_size' in config.DATABASE[db_name]:
+                pool_size = config.DATABASE[db_name]['pool_size']
 
             SQL_ENGINE[db_name] = create_engine(
                 uri,
                 echo=config.IS_DEV,
                 pool_recycle=3600,
+                pool_size=pool_size
             )
 
         return SQL_ENGINE[db_name]
