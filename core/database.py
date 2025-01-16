@@ -64,7 +64,7 @@ class Database:
         if db_name not in SQL_ENGINE or SQL_ENGINE[db_name] is None:
             uri = self._get_uri(db_name)
             pool_size = 5
-            
+
             if 'pool_size' in config.DATABASE[db_name]:
                 pool_size = config.DATABASE[db_name]['pool_size']
 
@@ -102,7 +102,7 @@ class Database:
         result = self.engine.execute(query, args)
 
         try:
-            return self._fecth_row_assoc(result.fetchone(), result.keys())
+            return self._fetch_row_assoc(result.fetchone(), result.keys())
         except:
             return []
 
@@ -156,18 +156,18 @@ class Database:
 
         try:
             for row in rows:
-                result.append(self._fecth_row_assoc(row, keys))
+                result.append(self._fetch_row_assoc(row, keys))
         except:
             pass
 
         return result
 
-    def _fecth_row_assoc(self, row, keys):
+    def _fetch_row_assoc(self, row, keys):
         nb = 0
         my_row = {}
 
         for val in row:
-            my_row[keys[nb]] = val
+            my_row[keys._keys[nb]] = val
             nb = nb + 1
 
         return my_row
